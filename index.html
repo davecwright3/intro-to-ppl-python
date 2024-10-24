@@ -1,0 +1,2952 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="David Wright">
+<meta name="dcterms.date" content="2024-10-24">
+
+<title>Introduction to Probabilistic Programming in Python</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="ppl-python-intro_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ppl-python-intro_files/libs/quarto-html/quarto.js"></script>
+<script src="ppl-python-intro_files/libs/quarto-html/popper.min.js"></script>
+<script src="ppl-python-intro_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="ppl-python-intro_files/libs/quarto-html/anchor.min.js"></script>
+<link href="ppl-python-intro_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ppl-python-intro_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="ppl-python-intro_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="ppl-python-intro_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="ppl-python-intro_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#intro-to-probabilistic-programming-in-python" id="toc-intro-to-probabilistic-programming-in-python" class="nav-link active" data-scroll-target="#intro-to-probabilistic-programming-in-python">Intro to Probabilistic Programming in Python</a>
+  <ul class="collapse">
+  <li><a href="#specifying-prior-knowledge" id="toc-specifying-prior-knowledge" class="nav-link" data-scroll-target="#specifying-prior-knowledge">Specifying Prior Knowledge</a></li>
+  <li><a href="#the-likelihood-of-the-data-given-the-latent-variables" id="toc-the-likelihood-of-the-data-given-the-latent-variables" class="nav-link" data-scroll-target="#the-likelihood-of-the-data-given-the-latent-variables">The likelihood of the data given the latent variables</a></li>
+  <li><a href="#putting-it-all-together" id="toc-putting-it-all-together" class="nav-link" data-scroll-target="#putting-it-all-together">Putting it all together</a></li>
+  <li><a href="#how-would-we-implement-this-in-code" id="toc-how-would-we-implement-this-in-code" class="nav-link" data-scroll-target="#how-would-we-implement-this-in-code">How would we implement this in code?</a></li>
+  <li><a href="#what-ppls-are-out-there" id="toc-what-ppls-are-out-there" class="nav-link" data-scroll-target="#what-ppls-are-out-there">What PPLs are out there?</a></li>
+  <li><a href="#using-arviz" id="toc-using-arviz" class="nav-link" data-scroll-target="#using-arviz">Using ArviZ</a></li>
+  </ul></li>
+  <li><a href="#a-more-sophisticated-example-from-numpyros-intro-tutorials" id="toc-a-more-sophisticated-example-from-numpyros-intro-tutorials" class="nav-link" data-scroll-target="#a-more-sophisticated-example-from-numpyros-intro-tutorials">A more sophisticated example from NumPyro’s intro tutorials</a>
+  <ul class="collapse">
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">Dataset</a></li>
+  <li><a href="#regression-model-to-predict-divorce-rate" id="toc-regression-model-to-predict-divorce-rate" class="nav-link" data-scroll-target="#regression-model-to-predict-divorce-rate">Regression Model to Predict Divorce Rate</a>
+  <ul class="collapse">
+  <li><a href="#model-1-predictor---marriage-rate" id="toc-model-1-predictor---marriage-rate" class="nav-link" data-scroll-target="#model-1-predictor---marriage-rate">Model 1: Predictor - Marriage Rate</a></li>
+  <li><a href="#model-2-predictor---median-age-of-marriage" id="toc-model-2-predictor---median-age-of-marriage" class="nav-link" data-scroll-target="#model-2-predictor---median-age-of-marriage">Model 2: Predictor - Median Age of Marriage</a></li>
+  <li><a href="#model-3-predictor---marriage-rate-and-median-age-of-marriage" id="toc-model-3-predictor---marriage-rate-and-median-age-of-marriage" class="nav-link" data-scroll-target="#model-3-predictor---marriage-rate-and-median-age-of-marriage">Model 3: Predictor - Marriage Rate and Median Age of Marriage</a></li>
+  <li><a href="#divorce-rate-residuals-by-state" id="toc-divorce-rate-residuals-by-state" class="nav-link" data-scroll-target="#divorce-rate-residuals-by-state">Divorce Rate Residuals by State</a></li>
+  </ul></li>
+  <li><a href="#regression-model-with-measurement-error" id="toc-regression-model-with-measurement-error" class="nav-link" data-scroll-target="#regression-model-with-measurement-error">Regression Model with Measurement Error</a>
+  <ul class="collapse">
+  <li><a href="#effect-of-incorporating-measurement-noise-on-residuals" id="toc-effect-of-incorporating-measurement-noise-on-residuals" class="nav-link" data-scroll-target="#effect-of-incorporating-measurement-noise-on-residuals">Effect of Incorporating Measurement Noise on Residuals</a></li>
+  </ul></li>
+  <li><a href="#recording-the-number-of-gradient-evaluations-used-by-nuts" id="toc-recording-the-number-of-gradient-evaluations-used-by-nuts" class="nav-link" data-scroll-target="#recording-the-number-of-gradient-evaluations-used-by-nuts">Recording the number of gradient evaluations used by NUTS</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/davecwright3/intro-to-ppl-python"><i class="bi bi-github"></i>Source</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Introduction to Probabilistic Programming in Python</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>David Wright </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 24, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="intro-to-probabilistic-programming-in-python" class="level1">
+<h1>Intro to Probabilistic Programming in Python</h1>
+<p>Today, we’ll be exploring probabilistic progamming languages (PPL) and how you can utilize Python to build (and perform inference on) statistical models.</p>
+<p>This introduction will mainly focus on <a href="https://num.pyro.ai/en/latest/">NumPyro</a>, but the ideas are transferable to other PPL’s.</p>
+<p>To understand PPL, we need to understand how to build statistical models.</p>
+<p>We will begin with an example from astronomy:</p>
+<p><img src="./figs/hubbles-law.png" class="img-fluid"></p>
+<p><span class="math display">\[\Large{v=H_0 D}\]</span></p>
+<section id="specifying-prior-knowledge" class="level3">
+<h3 class="anchored" data-anchor-id="specifying-prior-knowledge">Specifying Prior Knowledge</h3>
+<p>What prior beliefs/knowledge do we have with regards to the parameters of interest? We need to specify this with a <em>prior distribution</em>. For example:</p>
+<p><span class="math inline">\(\text{Prior} \equiv p(\text{parameters})\)</span></p>
+<p><img src="./figs/normal.png" class="img-fluid"></p>
+</section>
+<section id="the-likelihood-of-the-data-given-the-latent-variables" class="level3">
+<h3 class="anchored" data-anchor-id="the-likelihood-of-the-data-given-the-latent-variables">The likelihood of the data given the latent variables</h3>
+<p>In order to compare our choice of parameters to the observed data, we need to know how <em>likely</em> the observed data is given the parameters. This is where our <em>likelihood</em> distribution comes in</p>
+<p><span class="math inline">\(\text{Likelihood} \equiv p(\text{Data} | \text{parameters})\)</span></p>
+</section>
+<section id="putting-it-all-together" class="level3">
+<h3 class="anchored" data-anchor-id="putting-it-all-together">Putting it all together</h3>
+<p>What is our updated belief about our parameters, given the data? This is the <em>posterior distribution</em> of the parameters.</p>
+<p><span class="math inline">\(\text{Posterior} \propto p(\text{Data} | \text{parameters}) p(\text{parameters})\)</span></p>
+<p><img src="./figs/prior-posterior-likelihood.png" class="img-fluid"></p>
+<p>In our example, the latent variable is <span class="math inline">\(H_0\)</span>, the Hubble constant. Our posterior distribution would be</p>
+<p><span class="math inline">\(p(H_0 | v,\ D) \propto p(v,\ D | H_0) p(H_0)\)</span></p>
+</section>
+<section id="how-would-we-implement-this-in-code" class="level3">
+<h3 class="anchored" data-anchor-id="how-would-we-implement-this-in-code">How would we implement this in code?</h3>
+<p>This is where a PPL comes in. A PPL usually has the following capabilities:</p>
+<ul>
+<li>Stochastic primitives and distributions as first-class citizens</li>
+<li>Model building frameworks</li>
+<li>Inference routines that can consume the models and automatically adjust/tune themselves</li>
+</ul>
+</section>
+<section id="what-ppls-are-out-there" class="level3">
+<h3 class="anchored" data-anchor-id="what-ppls-are-out-there">What PPLs are out there?</h3>
+<p>There are many! The ones that are most popular in the Python ecosystem are - <a href="https://pystan.readthedocs.io/en/latest/">PyStan</a> - <a href="https://www.pymc.io/projects/docs/en/stable/learn.html">PyMC</a> - <a href="https://pyro.ai/">Pyro</a> - <a href="https://num.pyro.ai/en/latest/index.html#">NumPyro</a></p>
+<p>Each has their own benefits and drawbacks. Today, we’ll focus on NumPyro. Let’s see how to implement our Hubble model in NumPyro</p>
+<div id="610336c2-a078-4a31-a611-df7510fb7f07" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imports</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> arviz <span class="im">as</span> az</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpyro</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpyro <span class="im">import</span> distributions <span class="im">as</span> dist</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>az.output_notebook()</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+    <style>
+        .bk-notebook-logo {
+            display: block;
+            width: 20px;
+            height: 20px;
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAOkSURBVDiNjZRtaJVlGMd/1/08zzln5zjP1LWcU9N0NkN8m2CYjpgQYQXqSs0I84OLIC0hkEKoPtiH3gmKoiJDU7QpLgoLjLIQCpEsNJ1vqUOdO7ppbuec5+V+rj4ctwzd8IIbbi6u+8f1539dt3A78eXC7QizUF7gyV1fD1Yqg4JWz84yffhm0qkFqBogB9rM8tZdtwVsPUhWhGcFJngGeWrPzHm5oaMmkfEg1usvLFyc8jLRqDOMru7AyC8saQr7GG7f5fvDeH7Ej8CM66nIF+8yngt6HWaKh7k49Soy9nXurCi1o3qUbS3zWfrYeQDTB/Qj6kX6Ybhw4B+bOYoLKCC9H3Nu/leUTZ1JdRWkkn2ldcCamzrcf47KKXdAJllSlxAOkRgyHsGC/zRday5Qld9DyoM4/q/rUoy/CXh3jzOu3bHUVZeU+DEn8FInkPBFlu3+nW3Nw0mk6vCDiWg8CeJaxEwuHS3+z5RgY+YBR6V1Z1nxSOfoaPa4LASWxxdNp+VWTk7+4vzaou8v8PN+xo+KY2xsw6une2frhw05CTYOmQvsEhjhWjn0bmXPjpE1+kplmmkP3suftwTubK9Vq22qKmrBhpY4jvd5afdRA3wGjFAgcnTK2s4hY0/GPNIb0nErGMCRxWOOX64Z8RAC4oCXdklmEvcL8o0BfkNK4lUg9HTl+oPlQxdNo3Mg4Nv175e/1LDGzZen30MEjRUtmXSfiTVu1kK8W4txyV6BMKlbgk3lMwYCiusNy9fVfvvwMxv8Ynl6vxoByANLTWplvuj/nF9m2+PDtt1eiHPBr1oIfhCChQMBw6Aw0UulqTKZdfVvfG7VcfIqLG9bcldL/+pdWTLxLUy8Qq38heUIjh4XlzZxzQm19lLFlr8vdQ97rjZVOLf8nclzckbcD4wxXMidpX30sFd37Fv/GtwwhzhxGVAprjbg0gCAEeIgwCZyTV2Z1REEW8O4py0wsjeloKoMr6iCY6dP92H6Vw/oTyICIthibxjm/DfN9lVz8IqtqKYLUXfoKVMVQVVJOElGjrnnUt9T9wbgp8AyYKaGlqingHZU/uG2NTZSVqwHQTWkx9hxjkpWDaCg6Ckj5qebgBVbT3V3NNXMSiWSDdGV3hrtzla7J+duwPOToIg42ChPQOQjspnSlp1V+Gjdged7+8UN5CRAV7a5EdFNwCjEaBR27b3W890TE7g24NAP/mMDXRWrGoFPQI9ls/MWO2dWFAar/xcOIImbbpA3zgAAAABJRU5ErkJggg==);
+        }
+    </style>
+    <div>
+        <a href="https://bokeh.org" target="_blank" class="bk-notebook-logo"></a>
+        <span id="eaa84407-d9af-42f5-9e19-8de8f9fdfdd5">Loading BokehJS ...</span>
+    </div>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+'use strict';
+(function(root) {
+  function now() {
+    return new Date();
+  }
+
+  const force = true;
+
+  if (typeof root._bokeh_onload_callbacks === "undefined" || force === true) {
+    root._bokeh_onload_callbacks = [];
+    root._bokeh_is_loading = undefined;
+  }
+
+const JS_MIME_TYPE = 'application/javascript';
+  const HTML_MIME_TYPE = 'text/html';
+  const EXEC_MIME_TYPE = 'application/vnd.bokehjs_exec.v0+json';
+  const CLASS_NAME = 'output_bokeh rendered_html';
+
+  /**
+   * Render data to the DOM node
+   */
+  function render(props, node) {
+    const script = document.createElement("script");
+    node.appendChild(script);
+  }
+
+  /**
+   * Handle when an output is cleared or removed
+   */
+  function handleClearOutput(event, handle) {
+    function drop(id) {
+      const view = Bokeh.index.get_by_id(id)
+      if (view != null) {
+        view.model.document.clear()
+        Bokeh.index.delete(view)
+      }
+    }
+
+    const cell = handle.cell;
+
+    const id = cell.output_area._bokeh_element_id;
+    const server_id = cell.output_area._bokeh_server_id;
+
+    // Clean up Bokeh references
+    if (id != null) {
+      drop(id)
+    }
+
+    if (server_id !== undefined) {
+      // Clean up Bokeh references
+      const cmd_clean = "from bokeh.io.state import curstate; print(curstate().uuid_to_server['" + server_id + "'].get_sessions()[0].document.roots[0]._id)";
+      cell.notebook.kernel.execute(cmd_clean, {
+        iopub: {
+          output: function(msg) {
+            const id = msg.content.text.trim()
+            drop(id)
+          }
+        }
+      });
+      // Destroy server and session
+      const cmd_destroy = "import bokeh.io.notebook as ion; ion.destroy_server('" + server_id + "')";
+      cell.notebook.kernel.execute(cmd_destroy);
+    }
+  }
+
+  /**
+   * Handle when a new output is added
+   */
+  function handleAddOutput(event, handle) {
+    const output_area = handle.output_area;
+    const output = handle.output;
+
+    // limit handleAddOutput to display_data with EXEC_MIME_TYPE content only
+    if ((output.output_type != "display_data") || (!Object.prototype.hasOwnProperty.call(output.data, EXEC_MIME_TYPE))) {
+      return
+    }
+
+    const toinsert = output_area.element.find("." + CLASS_NAME.split(' ')[0]);
+
+    if (output.metadata[EXEC_MIME_TYPE]["id"] !== undefined) {
+      toinsert[toinsert.length - 1].firstChild.textContent = output.data[JS_MIME_TYPE];
+      // store reference to embed id on output_area
+      output_area._bokeh_element_id = output.metadata[EXEC_MIME_TYPE]["id"];
+    }
+    if (output.metadata[EXEC_MIME_TYPE]["server_id"] !== undefined) {
+      const bk_div = document.createElement("div");
+      bk_div.innerHTML = output.data[HTML_MIME_TYPE];
+      const script_attrs = bk_div.children[0].attributes;
+      for (let i = 0; i < script_attrs.length; i++) {
+        toinsert[toinsert.length - 1].firstChild.setAttribute(script_attrs[i].name, script_attrs[i].value);
+        toinsert[toinsert.length - 1].firstChild.textContent = bk_div.children[0].textContent
+      }
+      // store reference to server id on output_area
+      output_area._bokeh_server_id = output.metadata[EXEC_MIME_TYPE]["server_id"];
+    }
+  }
+
+  function register_renderer(events, OutputArea) {
+
+    function append_mime(data, metadata, element) {
+      // create a DOM node to render to
+      const toinsert = this.create_output_subarea(
+        metadata,
+        CLASS_NAME,
+        EXEC_MIME_TYPE
+      );
+      this.keyboard_manager.register_events(toinsert);
+      // Render to node
+      const props = {data: data, metadata: metadata[EXEC_MIME_TYPE]};
+      render(props, toinsert[toinsert.length - 1]);
+      element.append(toinsert);
+      return toinsert
+    }
+
+    /* Handle when an output is cleared or removed */
+    events.on('clear_output.CodeCell', handleClearOutput);
+    events.on('delete.Cell', handleClearOutput);
+
+    /* Handle when a new output is added */
+    events.on('output_added.OutputArea', handleAddOutput);
+
+    /**
+     * Register the mime type and append_mime function with output_area
+     */
+    OutputArea.prototype.register_mime_type(EXEC_MIME_TYPE, append_mime, {
+      /* Is output safe? */
+      safe: true,
+      /* Index of renderer in `output_area.display_order` */
+      index: 0
+    });
+  }
+
+  // register the mime type if in Jupyter Notebook environment and previously unregistered
+  if (root.Jupyter !== undefined) {
+    const events = require('base/js/events');
+    const OutputArea = require('notebook/js/outputarea').OutputArea;
+
+    if (OutputArea.prototype.mime_types().indexOf(EXEC_MIME_TYPE) == -1) {
+      register_renderer(events, OutputArea);
+    }
+  }
+  if (typeof (root._bokeh_timeout) === "undefined" || force === true) {
+    root._bokeh_timeout = Date.now() + 5000;
+    root._bokeh_failed_load = false;
+  }
+
+  const NB_LOAD_WARNING = {'data': {'text/html':
+     "<div style='background-color: #fdd'>\n"+
+     "<p>\n"+
+     "BokehJS does not appear to have successfully loaded. If loading BokehJS from CDN, this \n"+
+     "may be due to a slow or bad network connection. Possible fixes:\n"+
+     "</p>\n"+
+     "<ul>\n"+
+     "<li>re-rerun `output_notebook()` to attempt to load from CDN again, or</li>\n"+
+     "<li>use INLINE resources instead, as so:</li>\n"+
+     "</ul>\n"+
+     "<code>\n"+
+     "from bokeh.resources import INLINE\n"+
+     "output_notebook(resources=INLINE)\n"+
+     "</code>\n"+
+     "</div>"}};
+
+  function display_loaded(error = null) {
+    const el = document.getElementById("eaa84407-d9af-42f5-9e19-8de8f9fdfdd5");
+    if (el != null) {
+      const html = (() => {
+        if (typeof root.Bokeh === "undefined") {
+          if (error == null) {
+            return "BokehJS is loading ...";
+          } else {
+            return "BokehJS failed to load.";
+          }
+        } else {
+          const prefix = `BokehJS ${root.Bokeh.version}`;
+          if (error == null) {
+            return `${prefix} successfully loaded.`;
+          } else {
+            return `${prefix} <b>encountered errors</b> while loading and may not function as expected.`;
+          }
+        }
+      })();
+      el.innerHTML = html;
+
+      if (error != null) {
+        const wrapper = document.createElement("div");
+        wrapper.style.overflow = "auto";
+        wrapper.style.height = "5em";
+        wrapper.style.resize = "vertical";
+        const content = document.createElement("div");
+        content.style.fontFamily = "monospace";
+        content.style.whiteSpace = "pre-wrap";
+        content.style.backgroundColor = "rgb(255, 221, 221)";
+        content.textContent = error.stack ?? error.toString();
+        wrapper.append(content);
+        el.append(wrapper);
+      }
+    } else if (Date.now() < root._bokeh_timeout) {
+      setTimeout(() => display_loaded(error), 100);
+    }
+  }
+
+  function run_callbacks() {
+    try {
+      root._bokeh_onload_callbacks.forEach(function(callback) {
+        if (callback != null)
+          callback();
+      });
+    } finally {
+      delete root._bokeh_onload_callbacks
+    }
+    console.debug("Bokeh: all callbacks have finished");
+  }
+
+  function load_libs(css_urls, js_urls, callback) {
+    if (css_urls == null) css_urls = [];
+    if (js_urls == null) js_urls = [];
+
+    root._bokeh_onload_callbacks.push(callback);
+    if (root._bokeh_is_loading > 0) {
+      console.debug("Bokeh: BokehJS is being loaded, scheduling callback at", now());
+      return null;
+    }
+    if (js_urls == null || js_urls.length === 0) {
+      run_callbacks();
+      return null;
+    }
+    console.debug("Bokeh: BokehJS not loaded, scheduling load and callback at", now());
+    root._bokeh_is_loading = css_urls.length + js_urls.length;
+
+    function on_load() {
+      root._bokeh_is_loading--;
+      if (root._bokeh_is_loading === 0) {
+        console.debug("Bokeh: all BokehJS libraries/stylesheets loaded");
+        run_callbacks()
+      }
+    }
+
+    function on_error(url) {
+      console.error("failed to load " + url);
+    }
+
+    for (let i = 0; i < css_urls.length; i++) {
+      const url = css_urls[i];
+      const element = document.createElement("link");
+      element.onload = on_load;
+      element.onerror = on_error.bind(null, url);
+      element.rel = "stylesheet";
+      element.type = "text/css";
+      element.href = url;
+      console.debug("Bokeh: injecting link tag for BokehJS stylesheet: ", url);
+      document.body.appendChild(element);
+    }
+
+    for (let i = 0; i < js_urls.length; i++) {
+      const url = js_urls[i];
+      const element = document.createElement('script');
+      element.onload = on_load;
+      element.onerror = on_error.bind(null, url);
+      element.async = false;
+      element.src = url;
+      console.debug("Bokeh: injecting script tag for BokehJS library: ", url);
+      document.head.appendChild(element);
+    }
+  };
+
+  function inject_raw_css(css) {
+    const element = document.createElement("style");
+    element.appendChild(document.createTextNode(css));
+    document.body.appendChild(element);
+  }
+
+  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.6.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.6.0.min.js"];
+  const css_urls = [];
+
+  const inline_js = [    function(Bokeh) {
+      Bokeh.set_log_level("info");
+    },
+function(Bokeh) {
+    }
+  ];
+
+  function run_inline_js() {
+    if (root.Bokeh !== undefined || force === true) {
+      try {
+            for (let i = 0; i < inline_js.length; i++) {
+      inline_js[i].call(root, root.Bokeh);
+    }
+
+      } catch (error) {display_loaded(error);throw error;
+      }if (force === true) {
+        display_loaded();
+      }} else if (Date.now() < root._bokeh_timeout) {
+      setTimeout(run_inline_js, 100);
+    } else if (!root._bokeh_failed_load) {
+      console.log("Bokeh: BokehJS failed to load within specified timeout.");
+      root._bokeh_failed_load = true;
+    } else if (force !== true) {
+      const cell = $(document.getElementById("eaa84407-d9af-42f5-9e19-8de8f9fdfdd5")).parents('.cell').data().cell;
+      cell.output_area.append_execute_result(NB_LOAD_WARNING)
+    }
+  }
+
+  if (root._bokeh_is_loading === 0) {
+    console.debug("Bokeh: BokehJS loaded, going straight to plotting");
+    run_inline_js();
+  } else {
+    load_libs(css_urls, js_urls, function() {
+      console.debug("Bokeh: BokehJS plotting callback run at", now());
+      run_inline_js();
+    });
+  }
+}(window));
+</script>
+</div>
+</div>
+<p>First, let’s implement a simulator given a distance and choice of Hubble constant.</p>
+<div id="8dcb153d-4515-41bb-b665-2bf298af4411" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hubble_law(h0, d):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> h0 <span class="op">*</span> d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now, let’s generate some data and add noise</p>
+<div id="6d8d42d2-0a72-4aaf-8f68-29da94d48336" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>key <span class="op">=</span> jax.random.key(<span class="dv">5</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> jax.random.uniform(key, <span class="dv">50</span>, minval<span class="op">=</span><span class="dv">0</span>, maxval<span class="op">=</span><span class="dv">25</span>)  <span class="co"># Mpc</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> d.sort()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>h0 <span class="op">=</span> <span class="dv">67</span>  <span class="co"># km/s/Mpc</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> hubble_law(h0, d)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>err_fac <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>verr <span class="op">=</span> jax.random.normal(key, d.shape) <span class="op">*</span> err_fac</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>verr_obs <span class="op">=</span> jax.random.normal(jax.random.key(<span class="dv">6</span>), d.shape) <span class="op">*</span> err_fac</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="45cbb571-3869-4fc8-9a1c-b1355bf7c2fd" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.errorbar(d, v <span class="op">+</span> verr, jnp.<span class="bu">abs</span>(verr_obs), fmt<span class="op">=</span><span class="st">"o"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Mpc"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"km/s"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>plt.plot(d, v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="now-lets-build-our-model" class="level4">
+<h4 class="anchored" data-anchor-id="now-lets-build-our-model">Now let’s build our model</h4>
+<div id="779193a9-02ac-4481-81d0-f37343ad0325" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model(d, verr, v):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    h0 <span class="op">=</span> numpyro.sample(<span class="st">"h0"</span>, dist.Uniform(<span class="dv">60</span>, <span class="dv">80</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> numpyro.plate(<span class="st">"data"</span>, <span class="bu">len</span>(d)):</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> numpyro.deterministic(<span class="st">"pred"</span>, hubble_law(h0, d))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        numpyro.sample(<span class="st">"loglike"</span>, dist.Normal(pred, verr), obs<span class="op">=</span>v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="9f51e48f-205b-49b3-9c09-6d99640d305c" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>numpyro.render_model(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    model, model_args<span class="op">=</span>(d, jnp.<span class="bu">abs</span>(err_fac), v), render_distributions<span class="op">=</span><span class="va">True</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-7-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Finally, we can sample the posterior of our model to learn about <span class="math inline">\(H_0\)</span></p>
+<div id="9f4e3c7a-4301-4672-87a2-9835ba165852" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># I'll use the No U-Turn Sampler (NUTS) and run 5 chains in parallel using SIMD vectorization</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>mcmc <span class="op">=</span> numpyro.infer.MCMC(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    numpyro.infer.NUTS(model),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    num_warmup<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    num_samples<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    num_chains<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    chain_method<span class="op">=</span><span class="st">"vectorized"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>mcmc.run(key, d, jnp.<span class="bu">abs</span>(err_fac), v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>sample: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1100/1100 [00:03&lt;00:00, 359.40it/s]</code></pre>
+</div>
+</div>
+<div id="9d17443a-5eda-437a-b23e-30e5b7bbc3dc" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mcmc.print_summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                mean       std    median      5.0%     95.0%     n_eff     r_hat
+        h0     67.01      0.86     67.01     65.56     68.43   1920.88      1.00
+
+Number of divergences: 0</code></pre>
+</div>
+</div>
+<div id="1f3c93a0-a743-4081-afed-082f42cbddf3" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mcmc.get_samples()[<span class="st">"h0"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>Array([67.11925 , 66.401085, 66.892006, ..., 66.564575, 66.7084  ,
+       65.904045], dtype=float32)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="using-arviz" class="level3">
+<h3 class="anchored" data-anchor-id="using-arviz">Using ArviZ</h3>
+<p>We can use the <a href="https://python.arviz.org/en/stable/">ArviZ</a> package to explore the results of our inference. This package works with most of the PPL’s available, so it is a great tool to learn!</p>
+<div id="a4e858e2-bc8a-4afd-9d17-777ed871d907" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>inf_data <span class="op">=</span> az.from_numpyro(mcmc)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>az.summary(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    inf_data,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    var_names<span class="op">=</span>[<span class="st">"~pred*"</span>],</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    filter_vars<span class="op">=</span><span class="st">"regex"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">sd</th>
+<th data-quarto-table-cell-role="th">hdi_3%</th>
+<th data-quarto-table-cell-role="th">hdi_97%</th>
+<th data-quarto-table-cell-role="th">mcse_mean</th>
+<th data-quarto-table-cell-role="th">mcse_sd</th>
+<th data-quarto-table-cell-role="th">ess_bulk</th>
+<th data-quarto-table-cell-role="th">ess_tail</th>
+<th data-quarto-table-cell-role="th">r_hat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">h0</td>
+<td>67.009</td>
+<td>0.863</td>
+<td>65.318</td>
+<td>68.602</td>
+<td>0.02</td>
+<td>0.014</td>
+<td>1935.0</td>
+<td>2201.0</td>
+<td>1.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="1fa827c2-cedf-403c-a5e6-2eeda08df769" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>az.plot_trace(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    inf_data,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    backend<span class="op">=</span><span class="st">"matplotlib"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    compact<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    var_names<span class="op">=</span>[<span class="st">"~pred*"</span>],</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    filter_vars<span class="op">=</span><span class="st">"regex"</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    combined<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>array([[&lt;Axes: title={'center': 'h0'}&gt;, &lt;Axes: title={'center': 'h0'}&gt;]],
+      dtype=object)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-12-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="a-more-sophisticated-example-from-numpyros-intro-tutorials" class="level1">
+<h1>A more sophisticated example from NumPyro’s intro tutorials</h1>
+<p>This is also a linear regression example, but it goes much more in depth with NumPyro’s capabilities</p>
+<section id="dataset" class="level2">
+<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
+<p>For this example, we will use the <code>WaffleDivorce</code> dataset from Chapter 05, Statistical Rethinking [<a href="#References">1</a>]. The dataset contains divorce rates in each of the 50 states in the USA, along with predictors such as population, median age of marriage, whether it is a Southern state and, curiously, number of Waffle Houses.</p>
+<div id="90bc6b11-59ee-40a2-8a5e-72f2805df1b7" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-07-29T17:16:21.100577Z&quot;,&quot;start_time&quot;:&quot;2024-07-29T17:16:20.871186Z&quot;}" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpyro</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpyro.distributions <span class="im">as</span> dist</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> jax <span class="im">import</span> random, vmap</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> jax.scipy.special <span class="im">import</span> logsumexp</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpyro <span class="im">import</span> handlers</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpyro.diagnostics <span class="im">import</span> hpdi</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpyro.infer <span class="im">import</span> MCMC, NUTS</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>plt.style.use(<span class="st">"bmh"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="c823a95b-a6dc-43f4-b48a-81961f2a1b10" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-07-29T17:16:22.125032Z&quot;,&quot;start_time&quot;:&quot;2024-07-29T17:16:22.058625Z&quot;}" data-outputid="f26f9596-9f21-46d6-ec58-33dfc92b58a0" data-scrolled="true" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>DATASET_URL <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/rmcelreath/rethinking/master/data/WaffleDivorce.csv"</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>dset <span class="op">=</span> pd.read_csv(DATASET_URL, sep<span class="op">=</span><span class="st">";"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>dset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Location</th>
+<th data-quarto-table-cell-role="th">Loc</th>
+<th data-quarto-table-cell-role="th">Population</th>
+<th data-quarto-table-cell-role="th">MedianAgeMarriage</th>
+<th data-quarto-table-cell-role="th">Marriage</th>
+<th data-quarto-table-cell-role="th">Marriage SE</th>
+<th data-quarto-table-cell-role="th">Divorce</th>
+<th data-quarto-table-cell-role="th">Divorce SE</th>
+<th data-quarto-table-cell-role="th">WaffleHouses</th>
+<th data-quarto-table-cell-role="th">South</th>
+<th data-quarto-table-cell-role="th">Slaves1860</th>
+<th data-quarto-table-cell-role="th">Population1860</th>
+<th data-quarto-table-cell-role="th">PropSlaves1860</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Alabama</td>
+<td>AL</td>
+<td>4.78</td>
+<td>25.3</td>
+<td>20.2</td>
+<td>1.27</td>
+<td>12.7</td>
+<td>0.79</td>
+<td>128</td>
+<td>1</td>
+<td>435080</td>
+<td>964201</td>
+<td>0.450000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Alaska</td>
+<td>AK</td>
+<td>0.71</td>
+<td>25.2</td>
+<td>26.0</td>
+<td>2.93</td>
+<td>12.5</td>
+<td>2.05</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Arizona</td>
+<td>AZ</td>
+<td>6.33</td>
+<td>25.8</td>
+<td>20.3</td>
+<td>0.98</td>
+<td>10.8</td>
+<td>0.74</td>
+<td>18</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Arkansas</td>
+<td>AR</td>
+<td>2.92</td>
+<td>24.3</td>
+<td>26.4</td>
+<td>1.70</td>
+<td>13.5</td>
+<td>1.22</td>
+<td>41</td>
+<td>1</td>
+<td>111115</td>
+<td>435450</td>
+<td>0.260000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>California</td>
+<td>CA</td>
+<td>37.25</td>
+<td>26.8</td>
+<td>19.1</td>
+<td>0.39</td>
+<td>8.0</td>
+<td>0.24</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>379994</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>Colorado</td>
+<td>CO</td>
+<td>5.03</td>
+<td>25.7</td>
+<td>23.5</td>
+<td>1.24</td>
+<td>11.6</td>
+<td>0.94</td>
+<td>11</td>
+<td>0</td>
+<td>0</td>
+<td>34277</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>Connecticut</td>
+<td>CT</td>
+<td>3.57</td>
+<td>27.6</td>
+<td>17.1</td>
+<td>1.06</td>
+<td>6.7</td>
+<td>0.77</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>460147</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>Delaware</td>
+<td>DE</td>
+<td>0.90</td>
+<td>26.6</td>
+<td>23.1</td>
+<td>2.89</td>
+<td>8.9</td>
+<td>1.39</td>
+<td>3</td>
+<td>0</td>
+<td>1798</td>
+<td>112216</td>
+<td>0.016000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>District of Columbia</td>
+<td>DC</td>
+<td>0.60</td>
+<td>29.7</td>
+<td>17.7</td>
+<td>2.53</td>
+<td>6.3</td>
+<td>1.89</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>75080</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>Florida</td>
+<td>FL</td>
+<td>18.80</td>
+<td>26.4</td>
+<td>17.0</td>
+<td>0.58</td>
+<td>8.5</td>
+<td>0.32</td>
+<td>133</td>
+<td>1</td>
+<td>61745</td>
+<td>140424</td>
+<td>0.440000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>Georgia</td>
+<td>GA</td>
+<td>9.69</td>
+<td>25.9</td>
+<td>22.1</td>
+<td>0.81</td>
+<td>11.5</td>
+<td>0.58</td>
+<td>381</td>
+<td>1</td>
+<td>462198</td>
+<td>1057286</td>
+<td>0.440000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">11</td>
+<td>Hawaii</td>
+<td>HI</td>
+<td>1.36</td>
+<td>26.9</td>
+<td>24.9</td>
+<td>2.54</td>
+<td>8.3</td>
+<td>1.27</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">12</td>
+<td>Idaho</td>
+<td>ID</td>
+<td>1.57</td>
+<td>23.2</td>
+<td>25.8</td>
+<td>1.84</td>
+<td>7.7</td>
+<td>1.05</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">13</td>
+<td>Illinois</td>
+<td>IL</td>
+<td>12.83</td>
+<td>27.0</td>
+<td>17.9</td>
+<td>0.58</td>
+<td>8.0</td>
+<td>0.45</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>1711951</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">14</td>
+<td>Indiana</td>
+<td>IN</td>
+<td>6.48</td>
+<td>25.7</td>
+<td>19.8</td>
+<td>0.81</td>
+<td>11.0</td>
+<td>0.63</td>
+<td>17</td>
+<td>0</td>
+<td>0</td>
+<td>1350428</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">15</td>
+<td>Iowa</td>
+<td>IA</td>
+<td>3.05</td>
+<td>25.4</td>
+<td>21.5</td>
+<td>1.46</td>
+<td>10.2</td>
+<td>0.91</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>674913</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">16</td>
+<td>Kansas</td>
+<td>KS</td>
+<td>2.85</td>
+<td>25.0</td>
+<td>22.1</td>
+<td>1.48</td>
+<td>10.6</td>
+<td>1.09</td>
+<td>6</td>
+<td>0</td>
+<td>2</td>
+<td>107206</td>
+<td>0.000019</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">17</td>
+<td>Kentucky</td>
+<td>KY</td>
+<td>4.34</td>
+<td>24.8</td>
+<td>22.2</td>
+<td>1.11</td>
+<td>12.6</td>
+<td>0.75</td>
+<td>64</td>
+<td>1</td>
+<td>225483</td>
+<td>1155684</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">18</td>
+<td>Louisiana</td>
+<td>LA</td>
+<td>4.53</td>
+<td>25.9</td>
+<td>20.6</td>
+<td>1.19</td>
+<td>11.0</td>
+<td>0.89</td>
+<td>66</td>
+<td>1</td>
+<td>331726</td>
+<td>708002</td>
+<td>0.470000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">19</td>
+<td>Maine</td>
+<td>ME</td>
+<td>1.33</td>
+<td>26.4</td>
+<td>13.5</td>
+<td>1.40</td>
+<td>13.0</td>
+<td>1.48</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>628279</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">20</td>
+<td>Maryland</td>
+<td>MD</td>
+<td>5.77</td>
+<td>27.3</td>
+<td>18.3</td>
+<td>1.02</td>
+<td>8.8</td>
+<td>0.69</td>
+<td>11</td>
+<td>0</td>
+<td>87189</td>
+<td>687049</td>
+<td>0.130000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">21</td>
+<td>Massachusetts</td>
+<td>MA</td>
+<td>6.55</td>
+<td>28.5</td>
+<td>15.8</td>
+<td>0.70</td>
+<td>7.8</td>
+<td>0.52</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1231066</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">22</td>
+<td>Michigan</td>
+<td>MI</td>
+<td>9.88</td>
+<td>26.4</td>
+<td>16.5</td>
+<td>0.69</td>
+<td>9.2</td>
+<td>0.53</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>749113</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">23</td>
+<td>Minnesota</td>
+<td>MN</td>
+<td>5.30</td>
+<td>26.3</td>
+<td>15.3</td>
+<td>0.77</td>
+<td>7.4</td>
+<td>0.60</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>172023</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">24</td>
+<td>Mississippi</td>
+<td>MS</td>
+<td>2.97</td>
+<td>25.8</td>
+<td>19.3</td>
+<td>1.54</td>
+<td>11.1</td>
+<td>1.01</td>
+<td>72</td>
+<td>1</td>
+<td>436631</td>
+<td>791305</td>
+<td>0.550000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">25</td>
+<td>Missouri</td>
+<td>MO</td>
+<td>5.99</td>
+<td>25.6</td>
+<td>18.6</td>
+<td>0.81</td>
+<td>9.5</td>
+<td>0.67</td>
+<td>39</td>
+<td>1</td>
+<td>114931</td>
+<td>1182012</td>
+<td>0.097000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">26</td>
+<td>Montana</td>
+<td>MT</td>
+<td>0.99</td>
+<td>25.7</td>
+<td>18.5</td>
+<td>2.31</td>
+<td>9.1</td>
+<td>1.71</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">27</td>
+<td>Nebraska</td>
+<td>NE</td>
+<td>1.83</td>
+<td>25.4</td>
+<td>19.6</td>
+<td>1.44</td>
+<td>8.8</td>
+<td>0.94</td>
+<td>0</td>
+<td>0</td>
+<td>15</td>
+<td>28841</td>
+<td>0.000520</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">28</td>
+<td>New Hampshire</td>
+<td>NH</td>
+<td>1.32</td>
+<td>26.8</td>
+<td>16.7</td>
+<td>1.76</td>
+<td>10.1</td>
+<td>1.61</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>326073</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">29</td>
+<td>New Jersey</td>
+<td>NJ</td>
+<td>8.79</td>
+<td>27.7</td>
+<td>14.8</td>
+<td>0.59</td>
+<td>6.1</td>
+<td>0.46</td>
+<td>0</td>
+<td>0</td>
+<td>18</td>
+<td>672035</td>
+<td>0.000027</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">30</td>
+<td>New Mexico</td>
+<td>NM</td>
+<td>2.06</td>
+<td>25.8</td>
+<td>20.4</td>
+<td>1.90</td>
+<td>10.2</td>
+<td>1.11</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>93516</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">31</td>
+<td>New York</td>
+<td>NY</td>
+<td>19.38</td>
+<td>28.4</td>
+<td>16.8</td>
+<td>0.47</td>
+<td>6.6</td>
+<td>0.31</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>3880735</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">32</td>
+<td>North Carolina</td>
+<td>NC</td>
+<td>9.54</td>
+<td>25.7</td>
+<td>20.4</td>
+<td>0.98</td>
+<td>9.9</td>
+<td>0.48</td>
+<td>142</td>
+<td>1</td>
+<td>331059</td>
+<td>992622</td>
+<td>0.330000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">33</td>
+<td>North Dakota</td>
+<td>ND</td>
+<td>0.67</td>
+<td>25.3</td>
+<td>26.7</td>
+<td>2.93</td>
+<td>8.0</td>
+<td>1.44</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">34</td>
+<td>Ohio</td>
+<td>OH</td>
+<td>11.54</td>
+<td>26.3</td>
+<td>16.9</td>
+<td>0.61</td>
+<td>9.5</td>
+<td>0.45</td>
+<td>64</td>
+<td>0</td>
+<td>0</td>
+<td>2339511</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">35</td>
+<td>Oklahoma</td>
+<td>OK</td>
+<td>3.75</td>
+<td>24.4</td>
+<td>23.8</td>
+<td>1.29</td>
+<td>12.8</td>
+<td>1.01</td>
+<td>16</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">36</td>
+<td>Oregon</td>
+<td>OR</td>
+<td>3.83</td>
+<td>26.0</td>
+<td>18.9</td>
+<td>1.10</td>
+<td>10.4</td>
+<td>0.80</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>52465</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">37</td>
+<td>Pennsylvania</td>
+<td>PA</td>
+<td>12.70</td>
+<td>27.1</td>
+<td>15.5</td>
+<td>0.48</td>
+<td>7.7</td>
+<td>0.43</td>
+<td>11</td>
+<td>0</td>
+<td>0</td>
+<td>2906215</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">38</td>
+<td>Rhode Island</td>
+<td>RI</td>
+<td>1.05</td>
+<td>28.2</td>
+<td>15.0</td>
+<td>2.11</td>
+<td>9.4</td>
+<td>1.79</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>174620</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">39</td>
+<td>South Carolina</td>
+<td>SC</td>
+<td>4.63</td>
+<td>26.4</td>
+<td>18.1</td>
+<td>1.18</td>
+<td>8.1</td>
+<td>0.70</td>
+<td>144</td>
+<td>1</td>
+<td>402406</td>
+<td>703708</td>
+<td>0.570000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">40</td>
+<td>South Dakota</td>
+<td>SD</td>
+<td>0.81</td>
+<td>25.6</td>
+<td>20.1</td>
+<td>2.64</td>
+<td>10.9</td>
+<td>2.50</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4837</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">41</td>
+<td>Tennessee</td>
+<td>TN</td>
+<td>6.35</td>
+<td>25.2</td>
+<td>19.4</td>
+<td>0.85</td>
+<td>11.4</td>
+<td>0.75</td>
+<td>103</td>
+<td>1</td>
+<td>275719</td>
+<td>1109801</td>
+<td>0.200000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">42</td>
+<td>Texas</td>
+<td>TX</td>
+<td>25.15</td>
+<td>25.2</td>
+<td>21.5</td>
+<td>0.61</td>
+<td>10.0</td>
+<td>0.35</td>
+<td>99</td>
+<td>1</td>
+<td>182566</td>
+<td>604215</td>
+<td>0.300000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">43</td>
+<td>Utah</td>
+<td>UT</td>
+<td>2.76</td>
+<td>23.3</td>
+<td>29.6</td>
+<td>1.77</td>
+<td>10.2</td>
+<td>0.93</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>40273</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">44</td>
+<td>Vermont</td>
+<td>VT</td>
+<td>0.63</td>
+<td>26.9</td>
+<td>16.4</td>
+<td>2.40</td>
+<td>9.6</td>
+<td>1.87</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>315098</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">45</td>
+<td>Virginia</td>
+<td>VA</td>
+<td>8.00</td>
+<td>26.4</td>
+<td>20.5</td>
+<td>0.83</td>
+<td>8.9</td>
+<td>0.52</td>
+<td>40</td>
+<td>1</td>
+<td>490865</td>
+<td>1219630</td>
+<td>0.400000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">46</td>
+<td>Washington</td>
+<td>WA</td>
+<td>6.72</td>
+<td>25.9</td>
+<td>21.4</td>
+<td>1.00</td>
+<td>10.0</td>
+<td>0.65</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>11594</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">47</td>
+<td>West Virginia</td>
+<td>WV</td>
+<td>1.85</td>
+<td>25.0</td>
+<td>22.2</td>
+<td>1.69</td>
+<td>10.9</td>
+<td>1.34</td>
+<td>4</td>
+<td>1</td>
+<td>18371</td>
+<td>376688</td>
+<td>0.049000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">48</td>
+<td>Wisconsin</td>
+<td>WI</td>
+<td>5.69</td>
+<td>26.3</td>
+<td>17.2</td>
+<td>0.79</td>
+<td>8.3</td>
+<td>0.57</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>775881</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">49</td>
+<td>Wyoming</td>
+<td>WY</td>
+<td>0.56</td>
+<td>24.2</td>
+<td>30.7</td>
+<td>3.92</td>
+<td>10.3</td>
+<td>1.90</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Let us plot the pair-wise relationship amongst the main variables in the dataset, using <code>seaborn.pairplot</code>.</p>
+<div id="f1d97a0e-b1fa-4683-bddd-e60b95ad290b" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-07-29T17:14:49.947399Z&quot;,&quot;start_time&quot;:&quot;2024-07-29T17:14:47.358302Z&quot;}" data-outputid="eb113ed4-bc40-45f5-e82d-c56142336227" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">vars</span> <span class="op">=</span> [</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Population"</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MedianAgeMarriage"</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Marriage"</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"WaffleHouses"</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"South"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Divorce"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>sns.pairplot(dset, x_vars<span class="op">=</span><span class="bu">vars</span>, y_vars<span class="op">=</span><span class="bu">vars</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From the plots above, we can clearly observe that there is a relationship between divorce rates and marriage rates in a state (as might be expected), and also between divorce rates and median age of marriage.</p>
+<p>There is also a weak relationship between number of Waffle Houses and divorce rates, which is not obvious from the plot above, but will be clearer if we regress <code>Divorce</code> against <code>WaffleHouse</code> and plot the results.</p>
+<div id="de92f3e7-4855-49d3-a6b7-075c1dc01b64" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-07-29T17:12:19.000003Z&quot;,&quot;start_time&quot;:&quot;2024-07-29T17:12:18.887497Z&quot;}" data-outputid="9f95c298-43e7-4f40-cde5-0a9364088980" data-execution_count="15">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>sns.regplot(x<span class="op">=</span><span class="st">"WaffleHouses"</span>, y<span class="op">=</span><span class="st">"Divorce"</span>, data<span class="op">=</span>dset)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This is an example of a spurious association. We do not expect the number of Waffle Houses in a state to affect the divorce rate, but it is likely correlated with other factors that have an effect on the divorce rate. We will not delve into this spurious association in this tutorial, but the interested reader is encouraged to read Chapters 5 and 6 of [<a href="#References">1</a>] which explores the problem of causal association in the presence of multiple predictors.</p>
+<p>For simplicity, we will primarily focus on marriage rate and the median age of marriage as our predictors for divorce rate throughout the remaining tutorial.</p>
+</section>
+<section id="regression-model-to-predict-divorce-rate" class="level2">
+<h2 class="anchored" data-anchor-id="regression-model-to-predict-divorce-rate">Regression Model to Predict Divorce Rate</h2>
+<p>Let us now write a regressionn model in <em>NumPyro</em> to predict the divorce rate as a linear function of marriage rate and median age of marriage in each of the states.</p>
+<p>First, note that our predictor variables have somewhat different scales. It is a good practice to standardize our predictors and response variables to mean <code>0</code> and standard deviation <code>1</code>, which should result in <a href="https://mc-stan.org/docs/2_19/stan-users-guide/standardizing-predictors-and-outputs.html">faster inference</a>.</p>
+<div id="04bc547b-3c25-4662-8c77-c5a41fcd0345" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-07-29T17:16:29.185237Z&quot;,&quot;start_time&quot;:&quot;2024-07-29T17:16:29.181179Z&quot;}" data-execution_count="16">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> standardize(x):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (x <span class="op">-</span> x.mean()) <span class="op">/</span> x.std()</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>dset[<span class="st">"AgeScaled"</span>] <span class="op">=</span> dset.MedianAgeMarriage.pipe(standardize)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>dset[<span class="st">"MarriageScaled"</span>] <span class="op">=</span> dset.Marriage.pipe(standardize)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>dset[<span class="st">"DivorceScaled"</span>] <span class="op">=</span> dset.Divorce.pipe(standardize)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We write the NumPyro model as follows. While the code should largely be self-explanatory, take note of the following:</p>
+<ul>
+<li>In NumPyro, <em>model</em> code is any Python callable which can optionally accept additional arguments and keywords. For HMC which we will be using for this tutorial, these arguments and keywords remain static during inference, but we can reuse the same model to generate <a href="#Posterior-Predictive-Distribution">predictions</a> on new data.</li>
+<li>In addition to regular Python statements, the model code also contains primitives like <code>sample</code>. These primitives can be interpreted with various side-effects using effect handlers. For more on effect handlers, refer to [<a href="#References">3</a>], [<a href="#References">4</a>]. For now, just remember that a <code>sample</code> statement makes this a stochastic function that samples some latent parameters from a <em>prior distribution</em>. Our goal is to infer the <em>posterior distribution</em> of these parameters conditioned on observed data.</li>
+<li>The reason why we have kept our predictors as optional keyword arguments is to be able to reuse the same model as we vary the set of predictors. Likewise, the reason why the response variable is optional is that we would like to reuse this model to sample from the posterior predictive distribution. See the <a href="#Posterior-Predictive-Distribution">section</a> on plotting the posterior predictive distribution, as an example.</li>
+</ul>
+<div id="114ae4ae-cc74-4750-a947-169968711816" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-07-29T17:16:29.912629Z&quot;,&quot;start_time&quot;:&quot;2024-07-29T17:16:29.910032Z&quot;}" data-execution_count="17">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model(marriage<span class="op">=</span><span class="va">None</span>, age<span class="op">=</span><span class="va">None</span>, divorce<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> numpyro.sample(<span class="st">"a"</span>, dist.Normal(<span class="fl">0.0</span>, <span class="fl">0.2</span>))</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    M, A <span class="op">=</span> <span class="fl">0.0</span>, <span class="fl">0.0</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> marriage <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        bM <span class="op">=</span> numpyro.sample(<span class="st">"bM"</span>, dist.Normal(<span class="fl">0.0</span>, <span class="fl">0.5</span>))</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        M <span class="op">=</span> bM <span class="op">*</span> marriage</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> age <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        bA <span class="op">=</span> numpyro.sample(<span class="st">"bA"</span>, dist.Normal(<span class="fl">0.0</span>, <span class="fl">0.5</span>))</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        A <span class="op">=</span> bA <span class="op">*</span> age</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    sigma <span class="op">=</span> numpyro.sample(<span class="st">"sigma"</span>, dist.Exponential(<span class="fl">1.0</span>))</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    mu <span class="op">=</span> a <span class="op">+</span> M <span class="op">+</span> A</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    numpyro.sample(<span class="st">"obs"</span>, dist.Normal(mu, sigma), obs<span class="op">=</span>divorce)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="model-1-predictor---marriage-rate" class="level3">
+<h3 class="anchored" data-anchor-id="model-1-predictor---marriage-rate">Model 1: Predictor - Marriage Rate</h3>
+<p>We first try to model the divorce rate as depending on a single variable, marriage rate. As mentioned above, we can use the same <code>model</code> code as earlier, but only pass values for <code>marriage</code> and <code>divorce</code> keyword arguments. We will use the No U-Turn Sampler (see [<a href="#References">5</a>] for more details on the NUTS algorithm) to run inference on this simple model.</p>
+<p>The Hamiltonian Monte Carlo (or, the NUTS) implementation in NumPyro takes in a potential energy function. This is the negative log joint density for the model. Therefore, for our model description above, we need to construct a function which given the parameter values returns the potential energy (or negative log joint density). Additionally, the verlet integrator in HMC (or, NUTS) returns sample values simulated using Hamiltonian dynamics in the unconstrained space. As such, continuous variables with bounded support need to be transformed into unconstrained space using bijective transforms. We also need to transform these samples back to their constrained support before returning these values to the user. Thankfully, this is handled on the backend for us, within a convenience class for doing <a href="https://numpyro.readthedocs.io/en/latest/mcmc.html#numpyro.mcmc.MCMC">MCMC inference</a> that has the following methods:</p>
+<ul>
+<li><code>run(...)</code>: runs warmup, adapts steps size and mass matrix, and does sampling using the sample from the warmup phase.</li>
+<li><code>print_summary()</code>: print diagnostic information like quantiles, effective sample size, and the Gelman-Rubin diagnostic.</li>
+<li><code>get_samples()</code>: gets samples from the posterior distribution.</li>
+</ul>
+<p>Note the following:</p>
+<ul>
+<li>JAX uses functional PRNGs. Unlike other languages / frameworks which maintain a global random state, in JAX, every call to a sampler requires an <a href="https://github.com/google/jax#random-numbers-are-different">explicit PRNGKey</a>. We will split our initial random seed for subsequent operations, so that we do not accidentally reuse the same seed.</li>
+<li>We run inference with the <code>NUTS</code> sampler. To run vanilla HMC, we can instead use the <a href="https://numpyro.readthedocs.io/en/latest/mcmc.html#numpyro.mcmc.HMC">HMC</a> class.</li>
+</ul>
+<div id="8e30f24f-1727-4c19-b63c-cab9531e96ed" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-07-29T17:16:37.601666Z&quot;,&quot;start_time&quot;:&quot;2024-07-29T17:16:30.682590Z&quot;}" data-outputid="d52e722b-0061-49a1-d9df-d977a311b88d" data-execution_count="18">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start from this source of randomness. We will split keys for subsequent operations.</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>rng_key <span class="op">=</span> random.PRNGKey(<span class="dv">0</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Run NUTS.</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> NUTS(model)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>num_samples <span class="op">=</span> <span class="dv">2000</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>mcmc <span class="op">=</span> MCMC(kernel, num_warmup<span class="op">=</span><span class="dv">1000</span>, num_samples<span class="op">=</span>num_samples)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>mcmc.run(</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    rng_key_, marriage<span class="op">=</span>dset.MarriageScaled.values, divorce<span class="op">=</span>dset.DivorceScaled.values</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>mcmc.print_summary()</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>samples_1 <span class="op">=</span> mcmc.get_samples()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>sample: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3000/3000 [00:07&lt;00:00, 413.27it/s, 5 steps of size 6.75e-01. acc. prob=0.94]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                mean       std    median      5.0%     95.0%     n_eff     r_hat
+         a      0.00      0.11     -0.00     -0.19      0.17   1674.85      1.00
+        bM      0.35      0.13      0.35      0.14      0.56   1756.94      1.00
+     sigma      0.95      0.10      0.94      0.79      1.12   1632.67      1.00
+
+Number of divergences: 0</code></pre>
+</div>
+</div>
+<div id="51aef1f0-a78d-45a4-987e-b5607372f8e3" class="cell" data-execution_count="19">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>inf_data <span class="op">=</span> az.from_numpyro(mcmc)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>az.plot_trace(inf_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>array([[&lt;Axes: title={'center': 'a'}&gt;, &lt;Axes: title={'center': 'a'}&gt;],
+       [&lt;Axes: title={'center': 'bM'}&gt;, &lt;Axes: title={'center': 'bM'}&gt;],
+       [&lt;Axes: title={'center': 'sigma'}&gt;,
+        &lt;Axes: title={'center': 'sigma'}&gt;]], dtype=object)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-20-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="posterior-distribution-over-the-regression-parameters" class="level4">
+<h4 class="anchored" data-anchor-id="posterior-distribution-over-the-regression-parameters">Posterior Distribution over the Regression Parameters</h4>
+<p>We notice that the progress bar gives us online statistics on the acceptance probability, step size and number of steps taken per sample while running NUTS. In particular, during warmup, we adapt the step size and mass matrix to achieve a certain target acceptance probability which is 0.8, by default. We were able to successfully adapt our step size to achieve this target in the warmup phase.</p>
+<p>During warmup, the aim is to adapt hyper-parameters such as step size and mass matrix (the HMC algorithm is very sensitive to these hyper-parameters), and to reach the typical set (see [<a href="#References">6</a>] for more details). If there are any issues in the model specification, the first signal to notice would be low acceptance probabilities or very high number of steps. We use the sample from the end of the warmup phase to seed the MCMC chain (denoted by the second <code>sample</code> progress bar) from which we generate the desired number of samples from our target distribution.</p>
+<p>At the end of inference, NumPyro prints the mean, std and 90% CI values for each of the latent parameters. Note that since we standardized our predictors and response variable, we would expect the intercept to have mean 0, as can be seen here. It also prints other convergence diagnostics on the latent parameters in the model, including <a href="https://numpyro.readthedocs.io/en/latest/diagnostics.html#numpyro.diagnostics.effective_sample_size">effective sample size</a> and the <a href="https://numpyro.readthedocs.io/en/latest/diagnostics.html#numpyro.diagnostics.gelman_rubin">gelman rubin diagnostic</a> (<span class="math inline">\(\hat{R}\)</span>). The value for these diagnostics indicates that the chain has converged to the target distribution. In our case, the “target distribution” is the posterior distribution over the latent parameters that we are interested in. Note that this is often worth verifying with multiple chains for more complicated models. In the end, <code>samples_1</code> is a collection (in our case, a <code>dict</code> since <code>init_samples</code> was a <code>dict</code>) containing samples from the posterior distribution for each of the latent parameters in the model.</p>
+<p>To look at our regression fit, let us plot the regression line using our posterior estimates for the regression parameters, along with the 90% Credibility Interval (CI). Note that the <a href="https://numpyro.readthedocs.io/en/latest/diagnostics.html#numpyro.diagnostics.hpdi">hpdi</a> function in NumPyro’s diagnostics module can be used to compute CI. In the functions below, note that the collected samples from the posterior are all along the leading axis.</p>
+<div id="c0e35455-d7fa-4406-a51b-1e9a8cdbb7bf" class="cell" data-outputid="163ad2c9-7567-490f-9535-f6834f457c8a" data-execution_count="20">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_regression(x, y_mean, y_hpdi):</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sort values for plotting by x axis</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    idx <span class="op">=</span> jnp.argsort(x)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    marriage <span class="op">=</span> x[idx]</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    mean <span class="op">=</span> y_mean[idx]</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    hpdi <span class="op">=</span> y_hpdi[:, idx]</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    divorce <span class="op">=</span> dset.DivorceScaled.values[idx]</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, ncols<span class="op">=</span><span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    ax.plot(marriage, mean)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    ax.plot(marriage, divorce, <span class="st">"o"</span>)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    ax.fill_between(marriage, hpdi[<span class="dv">0</span>], hpdi[<span class="dv">1</span>], alpha<span class="op">=</span><span class="fl">0.3</span>, interpolate<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ax</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute empirical posterior distribution over mu</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>posterior_mu <span class="op">=</span> (</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    jnp.expand_dims(samples_1[<span class="st">"a"</span>], <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> jnp.expand_dims(samples_1[<span class="st">"bM"</span>], <span class="op">-</span><span class="dv">1</span>) <span class="op">*</span> dset.MarriageScaled.values</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>mean_mu <span class="op">=</span> jnp.mean(posterior_mu, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>hpdi_mu <span class="op">=</span> hpdi(posterior_mu, <span class="fl">0.9</span>)</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plot_regression(dset.MarriageScaled.values, mean_mu, hpdi_mu)</span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(</span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">"Marriage rate"</span>, ylabel<span class="op">=</span><span class="st">"Divorce rate"</span>, title<span class="op">=</span><span class="st">"Regression line with 90% CI"</span></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-21-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see from the plot, that the CI broadens towards the tails where the data is relatively sparse, as can be expected.</p>
+</section>
+<section id="prior-predictive-distribution" class="level4">
+<h4 class="anchored" data-anchor-id="prior-predictive-distribution">Prior Predictive Distribution</h4>
+<p>Let us check that we have set sensible priors by sampling from the prior predictive distribution. NumPyro provides a handy <a href="http://num.pyro.ai/en/latest/utilities.html#numpyro.infer.util.Predictive">Predictive</a> utility for this purpose.</p>
+<div id="58dc08ca-f87b-40c1-95cf-92629f46c637" class="cell" data-outputid="a11554aa-96b7-4298-9456-d44e0d63d8af" data-execution_count="21">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpyro.infer <span class="im">import</span> Predictive</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>prior_predictive <span class="op">=</span> Predictive(model, num_samples<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>prior_predictions <span class="op">=</span> prior_predictive(rng_key_, marriage<span class="op">=</span>dset.MarriageScaled.values)[</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"obs"</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>mean_prior_pred <span class="op">=</span> jnp.mean(prior_predictions, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>hpdi_prior_pred <span class="op">=</span> hpdi(prior_predictions, <span class="fl">0.9</span>)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plot_regression(dset.MarriageScaled.values, mean_prior_pred, hpdi_prior_pred)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Marriage rate"</span>, ylabel<span class="op">=</span><span class="st">"Divorce rate"</span>, title<span class="op">=</span><span class="st">"Predictions with 90% CI"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-22-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note that for <code>Predictive</code> to work as expected, the response variable of the model (in this case, <code>divorce</code>) must be set to <code>None</code>. In the code above this is done implicitly by not passing a value for <code>divorce</code> to the model in the call to <code>prior_predictive</code>, which due to the model definition, sets <code>divorce=None</code>.</p>
+</section>
+<section id="posterior-predictive-distribution" class="level4">
+<h4 class="anchored" data-anchor-id="posterior-predictive-distribution">Posterior Predictive Distribution</h4>
+<p>Let us now look at the posterior predictive distribution to see how our predictive distribution looks with respect to the observed divorce rates. To get samples from the posterior predictive distribution, we need to run the model by substituting the latent parameters with samples from the posterior. Note that by default we generate a single prediction for each sample from the joint posterior distribution, but this can be controlled using the <code>num_samples</code> argument.</p>
+<div id="6d0ae816-37cd-4f3b-bf2e-32a30d08da85" class="cell" data-outputid="00bb95d0-8be6-4686-f9d9-bc8a8891aa2c" data-execution_count="22">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>predictive <span class="op">=</span> Predictive(model, samples_1)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> predictive(rng_key_, marriage<span class="op">=</span>dset.MarriageScaled.values)[<span class="st">"obs"</span>]</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> dset.<span class="bu">filter</span>([<span class="st">"Location"</span>])</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Mean Predictions"</span>] <span class="op">=</span> jnp.mean(predictions, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Location</th>
+<th data-quarto-table-cell-role="th">Mean Predictions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Alabama</td>
+<td>0.014285</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Alaska</td>
+<td>0.496625</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Arizona</td>
+<td>0.022891</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Arkansas</td>
+<td>0.597575</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>California</td>
+<td>-0.087638</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="predictive-utility-with-effect-handlers" class="level4">
+<h4 class="anchored" data-anchor-id="predictive-utility-with-effect-handlers">Predictive Utility With Effect Handlers</h4>
+<p>To remove the magic behind <code>Predictive</code>, let us see how we can combine <a href="https://numpyro.readthedocs.io/en/latest/handlers.html">effect handlers</a> with the <a href="https://github.com/google/jax#auto-vectorization-with-vmap">vmap</a> JAX primitive to implement our own simplified predictive utility function that can do vectorized predictions.</p>
+<div id="47e14a62-ba44-49ba-a4b1-f7e1cfd5e4ec" class="cell" data-execution_count="23">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict(rng_key, post_samples, model, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> handlers.seed(handlers.condition(model, post_samples), rng_key)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    model_trace <span class="op">=</span> handlers.trace(model).get_trace(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> model_trace[<span class="st">"obs"</span>][<span class="st">"value"</span>]</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># vectorize predictions via vmap</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>predict_fn <span class="op">=</span> vmap(</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> rng_key, samples: predict(</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>        rng_key, samples, model, marriage<span class="op">=</span>dset.MarriageScaled.values</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Note the use of the <code>condition</code>, <code>seed</code> and <code>trace</code> effect handlers in the <code>predict</code> function.</p>
+<ul>
+<li>The <code>seed</code> effect-handler is used to wrap a stochastic function with an initial <code>PRNGKey</code> seed. When a sample statement inside the model is called, it uses the existing seed to sample from a distribution but this effect-handler also splits the existing key to ensure that future <code>sample</code> calls in the model use the newly split key instead. This is to prevent us from having to explicitly pass in a <code>PRNGKey</code> to each <code>sample</code> statement in the model.</li>
+<li>The <code>condition</code> effect handler conditions the latent sample sites to certain values. In our case, we are conditioning on values from the posterior distribution returned by MCMC.</li>
+<li>The <code>trace</code> effect handler runs the model and records the execution trace within an <code>OrderedDict</code>. This trace object contains execution metadata that is useful for computing quantities such as the log joint density.</li>
+</ul>
+<p>It should be clear now that the <code>predict</code> function simply runs the model by substituting the latent parameters with samples from the posterior (generated by the <code>mcmc</code> function) to generate predictions. Note the use of JAX’s auto-vectorization transform called <a href="https://github.com/google/jax#auto-vectorization-with-vmap">vmap</a> to vectorize predictions. Note that if we didn’t use <code>vmap</code>, we would have to use a native for loop which for each sample which is much slower. Each draw from the posterior can be used to get predictions over all the 50 states. When we vectorize this over all the samples from the posterior using <code>vmap</code>, we will get a <code>predictions_1</code> array of shape <code>(num_samples, 50)</code>. We can then compute the mean and 90% CI of these samples to plot the posterior predictive distribution. We note that our mean predictions match those obtained from the <code>Predictive</code> utility class.</p>
+<div id="4140b4f8-2645-4e0f-be3e-0bd5ba40cab7" class="cell" data-outputid="9183ecd2-bb3b-473b-e912-09188806573e" data-execution_count="24">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using the same key as we used for Predictive - note that the results are identical.</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>predictions_1 <span class="op">=</span> predict_fn(random.split(rng_key_, num_samples), samples_1)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>mean_pred <span class="op">=</span> jnp.mean(predictions_1, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> dset.<span class="bu">filter</span>([<span class="st">"Location"</span>])</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Mean Predictions"</span>] <span class="op">=</span> mean_pred</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Location</th>
+<th data-quarto-table-cell-role="th">Mean Predictions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Alabama</td>
+<td>0.014285</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Alaska</td>
+<td>0.496625</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Arizona</td>
+<td>0.022891</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Arkansas</td>
+<td>0.597575</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>California</td>
+<td>-0.087638</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="64387709-981c-4532-b700-6cedf0fac33b" class="cell" data-outputid="19ed4248-f852-40d1-da61-f06faa6c4cbd" data-execution_count="25">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>hpdi_pred <span class="op">=</span> hpdi(predictions_1, <span class="fl">0.9</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plot_regression(dset.MarriageScaled.values, mean_pred, hpdi_pred)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Marriage rate"</span>, ylabel<span class="op">=</span><span class="st">"Divorce rate"</span>, title<span class="op">=</span><span class="st">"Predictions with 90% CI"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-26-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We have used the same <code>plot_regression</code> function as earlier. We notice that our CI for the predictive distribution is much broader as compared to the last plot due to the additional noise introduced by the <code>sigma</code> parameter. Most data points lie well within the 90% CI, which indicates a good fit.</p>
+</section>
+<section id="posterior-predictive-density" class="level4">
+<h4 class="anchored" data-anchor-id="posterior-predictive-density">Posterior Predictive Density</h4>
+<p>Likewise, making use of effect-handlers and <code>vmap</code>, we can also compute the log likelihood for this model given the dataset, and the log posterior predictive density [<a href="#References">6</a>] which is given by</p>
+<p><span class="math inline">\(log \prod_{i=1}^{n} \int p(y_i | \theta) p_{post}(\theta) d\theta  \approx \sum_{i=1}^n log \frac{\sum_s p(\theta^{s})}{S} \\ = \sum_{i=1}^n (log \sum_s p(\theta^{s}) - log(S))\)</span>.</p>
+<p>Here, <span class="math inline">\(i\)</span> indexes the observed data points <span class="math inline">\(y\)</span> and <span class="math inline">\(s\)</span> indexes the posterior samples over the latent parameters <span class="math inline">\(\theta\)</span>. If the posterior predictive density for a model has a comparatively high value, it indicates that the observed data-points have higher probability under the given model.</p>
+<div id="9e2030e4-0b32-4785-ada6-f266a5f4f120" class="cell" data-execution_count="26">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_likelihood(rng_key, params, model, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> handlers.condition(model, params)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    model_trace <span class="op">=</span> handlers.trace(model).get_trace(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    obs_node <span class="op">=</span> model_trace[<span class="st">"obs"</span>]</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> obs_node[<span class="st">"fn"</span>].log_prob(obs_node[<span class="st">"value"</span>])</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_pred_density(rng_key, params, model, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">list</span>(params.values())[<span class="dv">0</span>].shape[<span class="dv">0</span>]</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    log_lk_fn <span class="op">=</span> vmap(</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">lambda</span> rng_key, params: log_likelihood(rng_key, params, model, <span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    log_lk_vals <span class="op">=</span> log_lk_fn(random.split(rng_key, n), params)</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (logsumexp(log_lk_vals, <span class="dv">0</span>) <span class="op">-</span> jnp.log(n)).<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Note that NumPyro provides the <a href="http://num.pyro.ai/en/latest/utilities.html#log-likelihood">log_likelihood</a> utility function that can be used directly for computing <code>log likelihood</code> as in the first function for any general model. In this tutorial, we would like to emphasize that there is nothing magical about such utility functions, and you can roll out your own inference utilities using NumPyro’s effect handling stack.</p>
+<div id="403f6114-b1d1-4546-931a-88c1fb8f5075" class="cell" data-outputid="9574a5f7-56aa-404a-e491-f7dc2a1c6636" data-execution_count="27">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Log posterior predictive density: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>        log_pred_density(</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>            rng_key_,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>            samples_1,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>            model,</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>            marriage<span class="op">=</span>dset.MarriageScaled.values,</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>            divorce<span class="op">=</span>dset.DivorceScaled.values,</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Log posterior predictive density: -66.7168197631836</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="model-2-predictor---median-age-of-marriage" class="level3">
+<h3 class="anchored" data-anchor-id="model-2-predictor---median-age-of-marriage">Model 2: Predictor - Median Age of Marriage</h3>
+<p>We will now model the divorce rate as a function of the median age of marriage. The computations are mostly a reproduction of what we did for Model 1. Notice the following:</p>
+<ul>
+<li>Divorce rate is inversely related to the age of marriage. Hence states where the median age of marriage is low will likely have a higher divorce rate.</li>
+<li>We get a higher log likelihood as compared to Model 2, indicating that median age of marriage is likely a much better predictor of divorce rate.</li>
+</ul>
+<div id="4f1343de-2ac1-419e-8ef5-4aac938a52a5" class="cell" data-outputid="128e3a0b-1742-44a3-f3d1-43b0cc4c5eef" data-execution_count="28">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>mcmc.run(rng_key_, age<span class="op">=</span>dset.AgeScaled.values, divorce<span class="op">=</span>dset.DivorceScaled.values)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>mcmc.print_summary()</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>samples_2 <span class="op">=</span> mcmc.get_samples()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>sample: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3000/3000 [00:06&lt;00:00, 443.72it/s, 7 steps of size 7.58e-01. acc. prob=0.92]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                mean       std    median      5.0%     95.0%     n_eff     r_hat
+         a     -0.00      0.10     -0.00     -0.17      0.16   1905.88      1.00
+        bA     -0.57      0.11     -0.57     -0.76     -0.38   1916.53      1.00
+     sigma      0.82      0.08      0.82      0.69      0.96   1780.31      1.00
+
+Number of divergences: 0</code></pre>
+</div>
+</div>
+<div id="e6e93e01-2946-4b33-8b16-49ad26d72b4f" class="cell" data-outputid="28a2e4af-81be-4229-b944-1af4d64ddd98" data-execution_count="29">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>posterior_mu <span class="op">=</span> (</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    jnp.expand_dims(samples_2[<span class="st">"a"</span>], <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> jnp.expand_dims(samples_2[<span class="st">"bA"</span>], <span class="op">-</span><span class="dv">1</span>) <span class="op">*</span> dset.AgeScaled.values</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>mean_mu <span class="op">=</span> jnp.mean(posterior_mu, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>hpdi_mu <span class="op">=</span> hpdi(posterior_mu, <span class="fl">0.9</span>)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plot_regression(dset.AgeScaled.values, mean_mu, hpdi_mu)</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">"Median marriage age"</span>,</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="st">"Divorce rate"</span>,</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Regression line with 90% CI"</span>,</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-30-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="03761db5-bf7c-41f6-b5bb-6b960443e848" class="cell" data-outputid="7646a234-b1ee-44f2-8510-02b76654d582" data-execution_count="30">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>predictions_2 <span class="op">=</span> Predictive(model, samples_2)(rng_key_, age<span class="op">=</span>dset.AgeScaled.values)[<span class="st">"obs"</span>]</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>mean_pred <span class="op">=</span> jnp.mean(predictions_2, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>hpdi_pred <span class="op">=</span> hpdi(predictions_2, <span class="fl">0.9</span>)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plot_regression(dset.AgeScaled.values, mean_pred, hpdi_pred)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Median Age"</span>, ylabel<span class="op">=</span><span class="st">"Divorce rate"</span>, title<span class="op">=</span><span class="st">"Predictions with 90% CI"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-31-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="d3d0d958-ead1-4b3e-90fe-0d81964d4c96" class="cell" data-outputid="b271e24a-b880-4e2c-97e9-15ea3a671610" data-execution_count="31">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Log posterior predictive density: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>        log_pred_density(</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>            rng_key_,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>            samples_2,</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>            model,</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>            age<span class="op">=</span>dset.AgeScaled.values,</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>            divorce<span class="op">=</span>dset.DivorceScaled.values,</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Log posterior predictive density: -59.260459899902344</code></pre>
+</div>
+</div>
+</section>
+<section id="model-3-predictor---marriage-rate-and-median-age-of-marriage" class="level3">
+<h3 class="anchored" data-anchor-id="model-3-predictor---marriage-rate-and-median-age-of-marriage">Model 3: Predictor - Marriage Rate and Median Age of Marriage</h3>
+<p>Finally, we will also model divorce rate as depending on both marriage rate as well as the median age of marriage. Note that the model’s posterior predictive density is similar to Model 2 which likely indicates that the marginal information from marriage rate in predicting divorce rate is low when the median age of marriage is already known.</p>
+<div id="9827ad34-224b-4ed9-82d7-d3d5a9d85712" class="cell" data-outputid="2ce7fc1d-48bb-4c7f-bad6-f0b929f3ac6b" data-execution_count="32">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>mcmc.run(</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    rng_key_,</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    marriage<span class="op">=</span>dset.MarriageScaled.values,</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    age<span class="op">=</span>dset.AgeScaled.values,</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    divorce<span class="op">=</span>dset.DivorceScaled.values,</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>mcmc.print_summary()</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>samples_3 <span class="op">=</span> mcmc.get_samples()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>sample: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3000/3000 [00:08&lt;00:00, 354.73it/s, 7 steps of size 6.74e-01. acc. prob=0.88]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                mean       std    median      5.0%     95.0%     n_eff     r_hat
+         a      0.00      0.10      0.00     -0.17      0.16   1530.81      1.00
+        bA     -0.60      0.16     -0.61     -0.88     -0.37   1357.43      1.00
+        bM     -0.06      0.16     -0.06     -0.34      0.18   1336.47      1.00
+     sigma      0.83      0.08      0.82      0.68      0.95   1399.60      1.00
+
+Number of divergences: 0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+</div>
+<div id="f77209dc-fbbb-4d5a-ad0c-3865e89ccfdc" class="cell" data-outputid="0561ac6d-ae08-4f60-a5a2-13c81f13ce3f" data-execution_count="33">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Log posterior predictive density: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>        log_pred_density(</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>            rng_key_,</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>            samples_3,</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>            model,</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>            marriage<span class="op">=</span>dset.MarriageScaled.values,</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>            age<span class="op">=</span>dset.AgeScaled.values,</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>            divorce<span class="op">=</span>dset.DivorceScaled.values,</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Log posterior predictive density: -59.03181457519531</code></pre>
+</div>
+</div>
+</section>
+<section id="divorce-rate-residuals-by-state" class="level3">
+<h3 class="anchored" data-anchor-id="divorce-rate-residuals-by-state">Divorce Rate Residuals by State</h3>
+<p>The regression plots above shows that the observed divorce rates for many states differs considerably from the mean regression line. To dig deeper into how the last model (Model 3) under-predicts or over-predicts for each of the states, we will plot the posterior predictive and residuals (<code>Observed divorce rate - Predicted divorce rate</code>) for each of the states.</p>
+<div id="c81087e3-8c73-4652-82bb-879f35045385" class="cell" data-outputid="a11368d2-222d-484d-9529-10ae11cc042a" data-execution_count="34">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions for Model 3.</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>predictions_3 <span class="op">=</span> Predictive(model, samples_3)(</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    rng_key_, marriage<span class="op">=</span>dset.MarriageScaled.values, age<span class="op">=</span>dset.AgeScaled.values</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>)[<span class="st">"obs"</span>]</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> jnp.arange(<span class="dv">50</span>)</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, ncols<span class="op">=</span><span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">16</span>))</span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>pred_mean <span class="op">=</span> jnp.mean(predictions_3, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>pred_hpdi <span class="op">=</span> hpdi(predictions_3, <span class="fl">0.9</span>)</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>residuals_3 <span class="op">=</span> dset.DivorceScaled.values <span class="op">-</span> predictions_3</span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>residuals_mean <span class="op">=</span> jnp.mean(residuals_3, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>residuals_hpdi <span class="op">=</span> hpdi(residuals_3, <span class="fl">0.9</span>)</span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> jnp.argsort(residuals_mean)</span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot posterior predictive</span></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].plot(jnp.zeros(<span class="dv">50</span>), y, <span class="st">"--"</span>)</span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].errorbar(</span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a>    pred_mean[idx],</span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>    xerr<span class="op">=</span>pred_hpdi[<span class="dv">1</span>, idx] <span class="op">-</span> pred_mean[idx],</span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="st">"o"</span>,</span>
+<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a>    ms<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a>    mew<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a>    ls<span class="op">=</span><span class="st">"none"</span>,</span>
+<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].plot(dset.DivorceScaled.values[idx], y, marker<span class="op">=</span><span class="st">"o"</span>, ls<span class="op">=</span><span class="st">"none"</span>, color<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].<span class="bu">set</span>(</span>
+<span id="cb49-31"><a href="#cb49-31" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">"Posterior Predictive (red) vs. Actuals (gray)"</span>,</span>
+<span id="cb49-32"><a href="#cb49-32" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="st">"State"</span>,</span>
+<span id="cb49-33"><a href="#cb49-33" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Posterior Predictive with 90% CI"</span>,</span>
+<span id="cb49-34"><a href="#cb49-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb49-35"><a href="#cb49-35" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_yticks(y)</span>
+<span id="cb49-36"><a href="#cb49-36" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_yticklabels(dset.Loc.values[idx], fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb49-37"><a href="#cb49-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-38"><a href="#cb49-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot residuals</span></span>
+<span id="cb49-39"><a href="#cb49-39" aria-hidden="true" tabindex="-1"></a>residuals_3 <span class="op">=</span> dset.DivorceScaled.values <span class="op">-</span> predictions_3</span>
+<span id="cb49-40"><a href="#cb49-40" aria-hidden="true" tabindex="-1"></a>residuals_mean <span class="op">=</span> jnp.mean(residuals_3, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb49-41"><a href="#cb49-41" aria-hidden="true" tabindex="-1"></a>residuals_hpdi <span class="op">=</span> hpdi(residuals_3, <span class="fl">0.9</span>)</span>
+<span id="cb49-42"><a href="#cb49-42" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> residuals_hpdi[<span class="dv">1</span>] <span class="op">-</span> residuals_mean</span>
+<span id="cb49-43"><a href="#cb49-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-44"><a href="#cb49-44" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].plot(jnp.zeros(<span class="dv">50</span>), y, <span class="st">"--"</span>)</span>
+<span id="cb49-45"><a href="#cb49-45" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].errorbar(</span>
+<span id="cb49-46"><a href="#cb49-46" aria-hidden="true" tabindex="-1"></a>    residuals_mean[idx], y, xerr<span class="op">=</span>err[idx], marker<span class="op">=</span><span class="st">"o"</span>, ms<span class="op">=</span><span class="dv">5</span>, mew<span class="op">=</span><span class="dv">4</span>, ls<span class="op">=</span><span class="st">"none"</span>, alpha<span class="op">=</span><span class="fl">0.8</span></span>
+<span id="cb49-47"><a href="#cb49-47" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb49-48"><a href="#cb49-48" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Residuals"</span>, ylabel<span class="op">=</span><span class="st">"State"</span>, title<span class="op">=</span><span class="st">"Residuals with 90% CI"</span>)</span>
+<span id="cb49-49"><a href="#cb49-49" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_yticks(y)</span>
+<span id="cb49-50"><a href="#cb49-50" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_yticklabels(dset.Loc.values[idx], fontsize<span class="op">=</span><span class="dv">10</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-35-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot on the left shows the mean predictions with 90% CI for each of the states using Model 3. The gray markers indicate the actual observed divorce rates. The right plot shows the residuals for each of the states, and both these plots are sorted by the residuals, i.e.&nbsp;at the bottom, we are looking at states where the model predictions are higher than the observed rates, whereas at the top, the reverse is true.</p>
+<p>Overall, the model fit seems good because most observed data points like within a 90% CI around the mean predictions. However, notice how the model over-predicts by a large margin for states like Idaho (bottom left), and on the other end under-predicts for states like Maine (top right). This is likely indicative of other factors that we are missing out in our model that affect divorce rate across different states. Even ignoring other socio-political variables, one such factor that we have not yet modeled is the measurement noise given by <code>Divorce SE</code> in the dataset. We will explore this in the next section.</p>
+</section>
+</section>
+<section id="regression-model-with-measurement-error" class="level2">
+<h2 class="anchored" data-anchor-id="regression-model-with-measurement-error">Regression Model with Measurement Error</h2>
+<p>Note that in our previous models, each data point influences the regression line equally. Is this well justified? We will build on the previous model to incorporate measurement error given by <code>Divorce SE</code> variable in the dataset. Incorporating measurement noise will be useful in ensuring that observations that have higher confidence (i.e.&nbsp;lower measurement noise) have a greater impact on the regression line. On the other hand, this will also help us better model outliers with high measurement errors. For more details on modeling errors due to measurement noise, refer to Chapter 14 of [<a href="#References">1</a>].</p>
+<p>To do this, we will reuse Model 3, with the only change that the final observed value has a measurement error given by <code>divorce_sd</code> (notice that this has to be standardized since the <code>divorce</code> variable itself has been standardized to mean 0 and std 1).</p>
+<div id="bb5e6d59-7a10-4b03-b76f-719b7f4721a1" class="cell" data-execution_count="35">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model_se(marriage, age, divorce_sd, divorce<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> numpyro.sample(<span class="st">"a"</span>, dist.Normal(<span class="fl">0.0</span>, <span class="fl">0.2</span>))</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    bM <span class="op">=</span> numpyro.sample(<span class="st">"bM"</span>, dist.Normal(<span class="fl">0.0</span>, <span class="fl">0.5</span>))</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    M <span class="op">=</span> bM <span class="op">*</span> marriage</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    bA <span class="op">=</span> numpyro.sample(<span class="st">"bA"</span>, dist.Normal(<span class="fl">0.0</span>, <span class="fl">0.5</span>))</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> bA <span class="op">*</span> age</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    sigma <span class="op">=</span> numpyro.sample(<span class="st">"sigma"</span>, dist.Exponential(<span class="fl">1.0</span>))</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    mu <span class="op">=</span> a <span class="op">+</span> M <span class="op">+</span> A</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    divorce_rate <span class="op">=</span> numpyro.sample(<span class="st">"divorce_rate"</span>, dist.Normal(mu, sigma))</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    numpyro.sample(<span class="st">"obs"</span>, dist.Normal(divorce_rate, divorce_sd), obs<span class="op">=</span>divorce)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="a06eb2d8-aa5d-4a9c-85e7-998004607270" class="cell" data-execution_count="36">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardize</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>dset[<span class="st">"DivorceScaledSD"</span>] <span class="op">=</span> dset[<span class="st">"Divorce SE"</span>] <span class="op">/</span> jnp.std(dset.Divorce.values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="3190ab4c-8855-4f9d-a514-d34cc08f4ed2" class="cell" data-outputid="1eb4cd42-3b0d-4ae8-bb65-335b6faf205a" data-execution_count="37">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> NUTS(model_se, target_accept_prob<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>mcmc <span class="op">=</span> MCMC(kernel, num_warmup<span class="op">=</span><span class="dv">1000</span>, num_samples<span class="op">=</span><span class="dv">3000</span>)</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>mcmc.run(</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    rng_key_,</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    marriage<span class="op">=</span>dset.MarriageScaled.values,</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>    age<span class="op">=</span>dset.AgeScaled.values,</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>    divorce_sd<span class="op">=</span>dset.DivorceScaledSD.values,</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    divorce<span class="op">=</span>dset.DivorceScaled.values,</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>mcmc.print_summary()</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>samples_4 <span class="op">=</span> mcmc.get_samples()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>sample: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4000/4000 [00:19&lt;00:00, 203.63it/s, 15 steps of size 2.36e-01. acc. prob=0.95]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                      mean       std    median      5.0%     95.0%     n_eff     r_hat
+               a     -0.06      0.10     -0.06     -0.21      0.10   2508.60      1.00
+              bA     -0.61      0.16     -0.61     -0.88     -0.36   1812.45      1.00
+              bM      0.06      0.17      0.06     -0.21      0.33   1690.18      1.00
+ divorce_rate[0]      1.16      0.37      1.16      0.52      1.73   2578.75      1.00
+ divorce_rate[1]      0.68      0.55      0.67     -0.19      1.63   3483.12      1.00
+ divorce_rate[2]      0.43      0.35      0.43     -0.14      0.99   3739.98      1.00
+ divorce_rate[3]      1.41      0.46      1.41      0.65      2.12   3901.74      1.00
+ divorce_rate[4]     -0.90      0.13     -0.90     -1.13     -0.71   3962.34      1.00
+ divorce_rate[5]      0.65      0.39      0.64     -0.03      1.26   3636.40      1.00
+ divorce_rate[6]     -1.36      0.34     -1.35     -1.93     -0.80   4218.01      1.00
+ divorce_rate[7]     -0.34      0.50     -0.34     -1.16      0.44   3539.44      1.00
+ divorce_rate[8]     -1.88      0.58     -1.90     -2.78     -0.86   2758.61      1.00
+ divorce_rate[9]     -0.62      0.17     -0.62     -0.89     -0.34   4278.66      1.00
+divorce_rate[10]      0.76      0.29      0.76      0.31      1.27   3220.41      1.00
+divorce_rate[11]     -0.54      0.50     -0.54     -1.35      0.30   3241.35      1.00
+divorce_rate[12]      0.19      0.52      0.20     -0.69      1.00   1869.19      1.00
+divorce_rate[13]     -0.87      0.23     -0.87     -1.25     -0.52   4476.71      1.00
+divorce_rate[14]      0.55      0.30      0.55      0.07      1.03   5460.52      1.00
+divorce_rate[15]      0.28      0.38      0.27     -0.32      0.94   3954.53      1.00
+divorce_rate[16]      0.49      0.43      0.50     -0.21      1.19   3947.45      1.00
+divorce_rate[17]      1.25      0.35      1.24      0.66      1.79   3944.93      1.00
+divorce_rate[18]      0.42      0.37      0.42     -0.18      1.03   4120.68      1.00
+divorce_rate[19]      0.38      0.54      0.36     -0.53      1.24   2068.42      1.00
+divorce_rate[20]     -0.56      0.34     -0.56     -1.10     -0.00   5683.67      1.00
+divorce_rate[21]     -1.10      0.27     -1.10     -1.53     -0.66   4441.69      1.00
+divorce_rate[22]     -0.28      0.26     -0.27     -0.73      0.12   5831.89      1.00
+divorce_rate[23]     -0.99      0.30     -0.99     -1.47     -0.51   3374.19      1.00
+divorce_rate[24]      0.43      0.41      0.42     -0.22      1.13   2986.80      1.00
+divorce_rate[25]     -0.03      0.32     -0.03     -0.57      0.49   4326.73      1.00
+divorce_rate[26]     -0.01      0.50     -0.01     -0.81      0.81   3596.61      1.00
+divorce_rate[27]     -0.16      0.38     -0.15     -0.78      0.48   3901.82      1.00
+divorce_rate[28]     -0.27      0.49     -0.28     -1.06      0.56   3362.90      1.00
+divorce_rate[29]     -1.79      0.24     -1.79     -2.17     -1.39   3964.69      1.00
+divorce_rate[30]      0.17      0.42      0.17     -0.51      0.86   4752.21      1.00
+divorce_rate[31]     -1.66      0.16     -1.66     -1.93     -1.39   5143.47      1.00
+divorce_rate[32]      0.12      0.25      0.12     -0.30      0.50   4703.77      1.00
+divorce_rate[33]     -0.05      0.53     -0.04     -0.88      0.84   2781.98      1.00
+divorce_rate[34]     -0.13      0.23     -0.13     -0.49      0.25   3995.42      1.00
+divorce_rate[35]      1.27      0.42      1.26      0.55      1.92   4311.02      1.00
+divorce_rate[36]      0.22      0.36      0.22     -0.38      0.79   3971.03      1.00
+divorce_rate[37]     -1.02      0.23     -1.02     -1.39     -0.65   5354.76      1.00
+divorce_rate[38]     -0.93      0.54     -0.94     -1.84     -0.12   3034.56      1.00
+divorce_rate[39]     -0.67      0.34     -0.67     -1.21     -0.13   4096.94      1.00
+divorce_rate[40]      0.25      0.56      0.24     -0.67      1.18   3843.19      1.00
+divorce_rate[41]      0.73      0.34      0.73      0.16      1.28   3481.02      1.00
+divorce_rate[42]      0.20      0.18      0.19     -0.10      0.50   4692.71      1.00
+divorce_rate[43]      0.81      0.42      0.82      0.17      1.54   2337.95      1.00
+divorce_rate[44]     -0.42      0.51     -0.43     -1.24      0.46   3695.75      1.00
+divorce_rate[45]     -0.39      0.25     -0.40     -0.80      0.02   4477.64      1.00
+divorce_rate[46]      0.13      0.30      0.13     -0.36      0.63   4997.99      1.00
+divorce_rate[47]      0.56      0.47      0.55     -0.21      1.29   3648.61      1.00
+divorce_rate[48]     -0.63      0.28     -0.63     -1.11     -0.20   4900.96      1.00
+divorce_rate[49]      0.86      0.58      0.86     -0.05      1.83   2321.32      1.00
+           sigma      0.58      0.11      0.58      0.41      0.75    896.25      1.00
+
+Number of divergences: 0</code></pre>
+</div>
+</div>
+<section id="effect-of-incorporating-measurement-noise-on-residuals" class="level3">
+<h3 class="anchored" data-anchor-id="effect-of-incorporating-measurement-noise-on-residuals">Effect of Incorporating Measurement Noise on Residuals</h3>
+<p>Notice that our values for the regression coefficients is very similar to Model 3. However, introducing measurement noise allows us to more closely match our predictive distribution to the observed values. We can see this if we plot the residuals as earlier.</p>
+<div id="da855b57-8d9a-4836-b116-c42a8aa968e2" class="cell" data-execution_count="38">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>predictions_4 <span class="op">=</span> Predictive(model_se, samples_4)(</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    rng_key_,</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    marriage<span class="op">=</span>dset.MarriageScaled.values,</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    age<span class="op">=</span>dset.AgeScaled.values,</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    divorce_sd<span class="op">=</span>dset.DivorceScaledSD.values,</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>)[<span class="st">"obs"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="2ffe26b2-7672-4c4d-915c-4d89c3f91da8" class="cell" data-outputid="e6878a39-dbb8-485c-bd56-79a66155f8a5" data-execution_count="39">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>sd <span class="op">=</span> dset.DivorceScaledSD.values</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>residuals_4 <span class="op">=</span> dset.DivorceScaled.values <span class="op">-</span> predictions_4</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>residuals_mean <span class="op">=</span> jnp.mean(residuals_4, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>residuals_hpdi <span class="op">=</span> hpdi(residuals_4, <span class="fl">0.9</span>)</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> residuals_hpdi[<span class="dv">1</span>] <span class="op">-</span> residuals_mean</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> jnp.argsort(residuals_mean)</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> jnp.arange(<span class="dv">50</span>)</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, ncols<span class="op">=</span><span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">16</span>))</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot Residuals</span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>ax.plot(jnp.zeros(<span class="dv">50</span>), y, <span class="st">"--"</span>)</span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>ax.errorbar(</span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>    residuals_mean[idx], y, xerr<span class="op">=</span>err[idx], marker<span class="op">=</span><span class="st">"o"</span>, ms<span class="op">=</span><span class="dv">5</span>, mew<span class="op">=</span><span class="dv">4</span>, ls<span class="op">=</span><span class="st">"none"</span>, alpha<span class="op">=</span><span class="fl">0.8</span></span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot SD</span></span>
+<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a>ax.errorbar(residuals_mean[idx], y, xerr<span class="op">=</span>sd[idx], ls<span class="op">=</span><span class="st">"none"</span>, color<span class="op">=</span><span class="st">"orange"</span>, alpha<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot earlier mean residual</span></span>
+<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a>ax.plot(</span>
+<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a>    jnp.mean(dset.DivorceScaled.values <span class="op">-</span> predictions_3, <span class="dv">0</span>)[idx],</span>
+<span id="cb56-23"><a href="#cb56-23" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb56-24"><a href="#cb56-24" aria-hidden="true" tabindex="-1"></a>    ls<span class="op">=</span><span class="st">"none"</span>,</span>
+<span id="cb56-25"><a href="#cb56-25" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="st">"o"</span>,</span>
+<span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a>    ms<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb56-27"><a href="#cb56-27" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">"black"</span>,</span>
+<span id="cb56-28"><a href="#cb56-28" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.6</span>,</span>
+<span id="cb56-29"><a href="#cb56-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb56-30"><a href="#cb56-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-31"><a href="#cb56-31" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Residuals"</span>, ylabel<span class="op">=</span><span class="st">"State"</span>, title<span class="op">=</span><span class="st">"Residuals with 90% CI"</span>)</span>
+<span id="cb56-32"><a href="#cb56-32" aria-hidden="true" tabindex="-1"></a>ax.set_yticks(y)</span>
+<span id="cb56-33"><a href="#cb56-33" aria-hidden="true" tabindex="-1"></a>ax.set_yticklabels(dset.Loc.values[idx], fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb56-34"><a href="#cb56-34" aria-hidden="true" tabindex="-1"></a>ax.text(</span>
+<span id="cb56-35"><a href="#cb56-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span><span class="fl">2.8</span>,</span>
+<span id="cb56-36"><a href="#cb56-36" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span><span class="dv">7</span>,</span>
+<span id="cb56-37"><a href="#cb56-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Residuals (with error-bars) from current model (in red). "</span></span>
+<span id="cb56-38"><a href="#cb56-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Black marker </span><span class="ch">\n</span><span class="st">shows residuals from the previous model (Model 3). "</span></span>
+<span id="cb56-39"><a href="#cb56-39" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Measurement </span><span class="ch">\n</span><span class="st">error is indicated by orange bar."</span>,</span>
+<span id="cb56-40"><a href="#cb56-40" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-40-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot above shows the residuals for each of the states, along with the measurement noise given by inner error bar. The gray dots are the mean residuals from our earlier Model 3. Notice how having an additional degree of freedom to model the measurement noise has shrunk the residuals. In particular, for Idaho and Maine, our predictions are now much closer to the observed values after incorporating measurement noise in the model.</p>
+<p>To better see how measurement noise affects the movement of the regression line, let us plot the residuals with respect to the measurement noise.</p>
+<div id="2dd8801b-7ab9-47dc-bf4f-08e14d4f4b8e" class="cell" data-outputid="12aba4b5-d974-4887-8be1-b223f73d0ad0" data-execution_count="40">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, ncols<span class="op">=</span><span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> dset.DivorceScaledSD.values</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>y1 <span class="op">=</span> jnp.mean(residuals_3, <span class="dv">0</span>)</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>y2 <span class="op">=</span> jnp.mean(residuals_4, <span class="dv">0</span>)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>ax.plot(x, y1, ls<span class="op">=</span><span class="st">"none"</span>, marker<span class="op">=</span><span class="st">"o"</span>)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>ax.plot(x, y2, ls<span class="op">=</span><span class="st">"none"</span>, marker<span class="op">=</span><span class="st">"o"</span>)</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (j, k) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(y1, y2)):</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>    ax.plot([x[i], x[i]], [j, k], <span class="st">"--"</span>, color<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">"Measurement Noise"</span>,</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="st">"Residual"</span>,</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Mean residuals (Model 4: red, Model 3: blue)"</span>,</span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ppl-python-intro_files/figure-html/cell-41-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot above shows what has happend in more detail - the regression line itself has moved to ensure a better fit for observations with low measurement noise (left of the plot) where the residuals have shrunk very close to 0. That is to say that data points with low measurement error have a concomitantly higher contribution in determining the regression line. On the other hand, for states with high measurement error (right of the plot), incorporating measurement noise allows us to move our posterior distribution mass closer to the observations resulting in a shrinkage of residuals as well.</p>
+</section>
+</section>
+<section id="recording-the-number-of-gradient-evaluations-used-by-nuts" class="level2">
+<h2 class="anchored" data-anchor-id="recording-the-number-of-gradient-evaluations-used-by-nuts">Recording the number of gradient evaluations used by NUTS</h2>
+<p>Hamiltonian Monte Carlo (and by extension NUTS) work by computing a potential function (which represents how unlikely it is for a set of parameters to give rise to the data) and repeatedly evaluating the gradient of this potential function as the Monte Carlo run progresses. In most cases, the evaluation of this gradient is (by far) the most expensive part of the algorithm, so it is useful to know how many times this gradient has been evaluated. This can be done by setting <code>extra_fields="num_steps"</code> when calling <code>mcmc.run</code>.</p>
+<p>To count the number of gradient evaluations used in the warmup phase as well, we must also set <code>collect_warmup=True</code> when calling <code>mcmc.warmup</code>.</p>
+<div id="eb8b144a-e914-427c-92fe-8fdda7ae6cf9" class="cell" data-executetime="{&quot;end_time&quot;:&quot;2024-07-29T17:21:58.370279Z&quot;,&quot;start_time&quot;:&quot;2024-07-29T17:21:51.785260Z&quot;}" data-execution_count="41">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>rng_key <span class="op">=</span> random.PRNGKey(<span class="dv">0</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run NUTS.</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> NUTS(model)</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>num_samples <span class="op">=</span> <span class="dv">2000</span></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>mcmc <span class="op">=</span> MCMC(kernel, num_warmup<span class="op">=</span><span class="dv">1000</span>, num_samples<span class="op">=</span>num_samples)</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="co"># First do the warmup, so we count the number of warmup steps as well.</span></span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Do not forget to set `collect_warmup=True`!</span></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>mcmc.warmup(</span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>    rng_key_,</span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>    marriage<span class="op">=</span>dset.MarriageScaled.values,</span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>    divorce<span class="op">=</span>dset.DivorceScaled.values,</span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>    collect_warmup<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>    extra_fields<span class="op">=</span>(<span class="st">"num_steps"</span>,),</span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>warmup_steps <span class="op">=</span> <span class="bu">sum</span>(mcmc.get_extra_fields()[<span class="st">"num_steps"</span>])</span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>mcmc.run(</span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>    rng_key_,</span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a>    marriage<span class="op">=</span>dset.MarriageScaled.values,</span>
+<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a>    divorce<span class="op">=</span>dset.DivorceScaled.values,</span>
+<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a>    extra_fields<span class="op">=</span>(<span class="st">"num_steps"</span>,),</span>
+<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb58-26"><a href="#cb58-26" aria-hidden="true" tabindex="-1"></a>total_steps <span class="op">=</span> <span class="bu">sum</span>(mcmc.get_extra_fields()[<span class="st">"num_steps"</span>]) <span class="op">+</span> warmup_steps</span>
+<span id="cb58-27"><a href="#cb58-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-28"><a href="#cb58-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb58-29"><a href="#cb58-29" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"Number of warmup steps: </span><span class="sc">{</span>warmup_steps<span class="sc">}</span><span class="ss">.  Total number of gradient evaluations: </span><span class="sc">{</span>total_steps<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb58-30"><a href="#cb58-30" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>warmup: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1000/1000 [00:03&lt;00:00, 309.06it/s, 1 steps of size 6.75e-01. acc. prob=0.79]
+sample: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2000/2000 [00:05&lt;00:00, 377.44it/s, 7 steps of size 6.75e-01. acc. prob=0.94]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of warmup steps: 4529.  Total number of gradient evaluations: 15611</code></pre>
+</div>
+</div>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li>McElreath, R. (2016). Statistical Rethinking: A Bayesian Course with Examples in R and Stan CRC Press.</li>
+<li>Stan Development Team. <a href="https://mc-stan.org/docs/2_19/stan-users-guide/index.html">Stan User’s Guide</a></li>
+<li>Goodman, N.D., and StuhlMueller, A. (2014). <a href="http://dippl.org/">The Design and Implementation of Probabilistic Programming Languages</a></li>
+<li>Pyro Development Team. <a href="http://pyro.ai/examples/effect_handlers.html">Poutine: A Guide to Programming with Effect Handlers in Pyro</a></li>
+<li>Hoffman, M.D., Gelman, A. (2011). The No-U-Turn Sampler: Adaptively Setting Path Lengths in Hamiltonian Monte Carlo.</li>
+<li>Betancourt, M. (2017). A Conceptual Introduction to Hamiltonian Monte Carlo.</li>
+<li>JAX Development Team (2018). <a href="https://github.com/google/jax">Composable transformations of Python+NumPy programs: differentiate, vectorize, JIT to GPU/TPU, and more</a></li>
+<li>Gelman, A., Hwang, J., and Vehtari A. <a href="https://arxiv.org/pdf/1307.5928.pdf">Understanding predictive information criteria for Bayesian models</a></li>
+</ol>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
